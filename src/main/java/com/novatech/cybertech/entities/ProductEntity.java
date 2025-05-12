@@ -1,45 +1,34 @@
 package com.novatech.cybertech.entities;
 
-import com.novatech.cybertech.entities.enums.Brand;
-import com.novatech.cybertech.entities.enums.Category;
-import com.novatech.cybertech.entities.enums.DisplayType;
+import com.novatech.cybertech.entities.enums.*;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
-@Builder
-@ToString
+@SuperBuilder
 @EqualsAndHashCode
-@Table(name = "product")
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "productId", nullable = false)
-    private Long productId;
-
-    @Column(name = "productUuid", nullable = false)
-    private UUID productUuid;
+@Table(name = "productTable")
+@ToString(callSuper = true)
+public class ProductEntity extends BaseEntity {
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "stockQuantity", nullable = false)
-    private int stockQuantity;
-
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "brand", nullable = false)
     private Brand brand;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     private Category category;
 
@@ -49,23 +38,25 @@ public class ProductEntity {
     @Column(name = "gpu", nullable = false, columnDefinition = "char(50)")
     private String gpu;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "ram", nullable = false, columnDefinition = "char(50)")
-    private String ram;
+    private Ram ram;
 
-    @Column(name = "hardDrive", nullable = false, columnDefinition = "char(50)")
-    private String hardDrive;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "ssd", nullable = false, columnDefinition = "char(50)")
-    private String ssd;
+    private SSD ssd;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "displayType")
     private DisplayType displayType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "displaySize")
-    private int displaySize;
+    private DisplaySize displaySize;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "os", nullable = false, columnDefinition = "char(20)")
-    private String os;
+    private Os os;
 
     @Column(name = "connectivity")
     private String connectivity;
@@ -79,7 +70,11 @@ public class ProductEntity {
     @Column(name = "description", columnDefinition = "text")
     private String description;
 
-    @OneToMany(mappedBy = "productEntityId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<CartItemEntity> cartItemEntities;
+
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItemEntity> orderItemEntities;
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

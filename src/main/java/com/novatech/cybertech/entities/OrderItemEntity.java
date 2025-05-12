@@ -2,37 +2,34 @@ package com.novatech.cybertech.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Entity
 @Getter
-@Builder
-@ToString
+@SuperBuilder
 @EqualsAndHashCode
-@Table(name = "orderItem")
-public class OrderItemEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderItemId;
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "orderItemTable")
+@ToString(callSuper = true)
+public class OrderItemEntity extends BaseEntity {
 
-    private UUID orderItemUuid;
-
-    @Column(nullable = false)
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(precision = 10, scale = 2, nullable = false)
+    @Column(name = "unitPrice", precision = 10, scale = 2, nullable = false)
     private BigDecimal unitPrice;
 
-    @Column(precision = 10, scale = 2, nullable = false)
+    @Column(name = "subtotal", precision = 10, scale = 2, nullable = false)
     private BigDecimal subtotal;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "order", nullable = false)
+    @JoinColumn(name = "orderId", nullable = false)
     private OrderEntity orderEntity;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "productId", nullable = false)
-    private ProductEntity productEntityId;
+    @JoinColumn(name = "productEntity", nullable = false)
+    private ProductEntity productEntity;
 }

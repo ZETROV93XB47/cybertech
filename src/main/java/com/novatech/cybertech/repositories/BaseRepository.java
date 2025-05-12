@@ -1,0 +1,21 @@
+package com.novatech.cybertech.repositories;
+
+import com.novatech.cybertech.entities.BaseEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@NoRepositoryBean
+public interface BaseRepository<T extends BaseEntity, U extends Number> extends JpaRepository<T, U> {
+    Optional<T> findByUuid(UUID uuid);
+
+    List<T> findAllByUuidIn(Collection<UUID> uuids);
+
+    void deleteByUuid(final UUID uuid);
+
+    void deleteAllByUuidIn(final Collection<UUID> uuids);
+}

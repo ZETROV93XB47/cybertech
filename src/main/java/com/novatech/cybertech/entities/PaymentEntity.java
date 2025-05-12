@@ -1,36 +1,42 @@
 package com.novatech.cybertech.entities;
 
 
+import com.novatech.cybertech.entities.enums.PaymentStatus;
+import com.novatech.cybertech.entities.enums.PaymentType;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Getter
-@Setter
-@Builder
-@ToString
+@SuperBuilder
 @EqualsAndHashCode
-@Table(name = "payment")
-public class PaymentEntity {
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "paymentTable")
+@ToString(callSuper = true)
+public class PaymentEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private UUID paymentUuid;
-
+    @Column(name = "amount", nullable = false)
     private BigDecimal amount;
-    private String paymentMethod;  // "CREDIT_CARD", "PAYPAL", etc.
-    private String paymentStatus;  // "SUCCESS", "FAILED", etc.
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "paymentType", nullable = false)
+    private PaymentType paymentType; // "CREDIT_CARD", "PAYPAL", etc.
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "paymentStatus", nullable = false)
+    private PaymentStatus paymentStatus; // "SUCCESS", "FAILED", etc.
 
     @OneToOne(mappedBy = "paymentEntity")
     private OrderEntity orderEntity;
 
     @CreationTimestamp
+    @Column(name = "paymentDate", nullable = false)
     private LocalDateTime paymentDate;
+
 }

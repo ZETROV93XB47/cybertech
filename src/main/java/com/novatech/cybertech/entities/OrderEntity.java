@@ -3,28 +3,21 @@ package com.novatech.cybertech.entities;
 import com.novatech.cybertech.entities.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
-@Builder
-@ToString
+@SuperBuilder
 @EqualsAndHashCode
-@Table(name = "order")
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
-
-    @Column(name = "orderUuid", nullable = false)
-    private UUID orderUuid;
+@Table(name = "orderTable")
+@ToString(callSuper = true)
+public class OrderEntity extends BaseEntity {
 
     @Column(name = "orderDate", nullable = false)
     private LocalDateTime orderDate;
@@ -45,6 +38,6 @@ public class OrderEntity {
     private List<OrderItemEntity> orderItemEntities;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order")
+    @JoinColumn(name = "paymentId")
     private PaymentEntity paymentEntity;
 }
