@@ -11,9 +11,9 @@ import java.util.UUID;
 
 @NoRepositoryBean
 public interface BaseRepository<T extends BaseEntity, U extends Number> extends JpaRepository<T, U> {
-    Optional<T> findByUuid(UUID uuid);
+    Optional<T> findByUuid(final UUID uuid);
 
-    List<T> findAllByUuidIn(Collection<UUID> uuids);
+    List<T> findAllByUuidIn(final Collection<UUID> uuids);
 
     void deleteByUuid(final UUID uuid);
 

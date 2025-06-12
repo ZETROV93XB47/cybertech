@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -33,7 +33,7 @@ public class UserCreateRequestDto {
 
     // La date de naissance peut être optionnelle
     @Past(message = "Birth date must be in the past")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 8, message = "Password must be at least 8 characters long")

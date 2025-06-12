@@ -1,7 +1,7 @@
 package com.novatech.cybertech.api.controllers;
 
-import com.novatech.cybertech.api.error.model.ErrorResponseDto;
 import com.novatech.cybertech.dto.request.UserCreateRequestDto;
+import com.novatech.cybertech.dto.request.UserUpdateRequestDto;
 import com.novatech.cybertech.dto.response.UserResponseDto;
 import com.novatech.cybertech.services.implementation.UserServiceImp;
 import com.novatech.cybertech.utils.DataGenerator;
@@ -20,56 +20,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.UUID;
 
+import static com.novatech.cybertech.constants.CyberTechAppConstants.USER_CONTROLLER_BASE_PATH;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/services/user")
-@Tag(name = "UserController", description = "API for user management") // Ajout d'une description au Tag
-public class UserController {
+@RequestMapping(USER_CONTROLLER_BASE_PATH)
+@Tag(name = "UserController", description = "API for user management")
+public class UserController implements UserControllerApiSpec {
 
     private final UserServiceImp userService;
 
-    @Operation(summary = "Request a User by UUID",
-            description = "Fetches a user's details based on their unique UUID.", // Ajout d'une description plus détaillée
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "User found successfully", // Description plus précise
-                            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Bad request (e.g., invalid UUID format)",
-                            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))),
-                    @ApiResponse(responseCode = "403", description = "Operation forbidden",
-                            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))),
-                    @ApiResponse(responseCode = "404", description = "User not found",
-                            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class)))})
-    @GetMapping(value = "/{userUuid}", produces = APPLICATION_JSON_VALUE)
-    public UserResponseDto getUserByUuid(@PathVariable("userUuid") UUID userUuid) {
-        return userService.getByUUID(userUuid);
+    @Override
+    @GetMapping(value = "/get/{userUuid}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserResponseDto> getUserByUuid(@PathVariable("userUuid") UUID userUuid) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getByUUID(userUuid));
     }
 
-
-    @Operation(summary = "Create a new User",
-            description = "Registers a new user in the system. Email must be unique.",
-            // Documentation du corps de la requête
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "User data for creation. All fields are mandatory except address and birthDate (if configured as optional).",
-                    required = true,
-                    content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserCreateRequestDto.class))
-            ),
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "User created successfully",
-                            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserResponseDto.class))),
-                    @ApiResponse(responseCode = "400", description = "Invalid input data / Validation error (e.g., email format, missing fields, password too short)",
-                            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))),
-                    @ApiResponse(responseCode = "409", description = "Conflict - User already exists (e.g., duplicate email)",
-                            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))),
-                    @ApiResponse(responseCode = "500", description = "Internal server error during user creation",
-                            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class)))
-            })
+    @Override
     @PostMapping(value = "/create", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserCreateRequestDto userCreateRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(userCreateRequestDto));
+    }
+
+    @Override
+    @PatchMapping(value = "/update/{userUuid}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserResponseDto> updateUser(final UserUpdateRequestDto userUpdateRequestDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.update(userUpdateRequestDto));
+    }
+
+    @Override
+    @DeleteMapping(value = "/delete/{userUuid}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteUserByUuid(UUID userUuid) {
+        userService.deleteByUUID(userUuid);
+        return ResponseEntity.noContent().build();
     }
 
 

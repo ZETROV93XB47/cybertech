@@ -2,7 +2,7 @@ package com.novatech.cybertech.services.core;
 
 import java.util.Collection;
 
-public interface BaseService<T, U, V> {
+public interface BaseService<T, U, V, W> {
 
     Collection<V> getAll();
 
@@ -12,7 +12,7 @@ public interface BaseService<T, U, V> {
 
     V create(U u);
 
-    V update(U u);
+    V update(W w);
 
     void deleteByUUID(T t);
     void deleteByUUIDs(Collection<T> ts);

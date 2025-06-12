@@ -2,15 +2,17 @@ package com.novatech.cybertech.services.implementation;
 
 
 import com.novatech.cybertech.dto.request.UserCreateRequestDto;
+import com.novatech.cybertech.dto.request.UserUpdateRequestDto;
 import com.novatech.cybertech.dto.response.UserResponseDto;
 import com.novatech.cybertech.entities.UserEntity;
+import com.novatech.cybertech.exceptions.UserNotFoundException;
 import com.novatech.cybertech.mappers.entity.UserMapper;
 import com.novatech.cybertech.repositories.UserRepository;
 import com.novatech.cybertech.services.core.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,23 +27,27 @@ public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<UserResponseDto> getAll() {
         return userMapper.mapFromEntityToDto(userRepository.findAll());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDto getByUUID(UUID uuid) {
-        return userMapper.mapFromEntityToDto(userRepository.findByUuid(uuid).orElse(null));//TODO: check i fit's relevant to return null or throw an exception
+        return userMapper.mapFromEntityToDto(userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException("No user with the UUID : {} found", uuid)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<UserResponseDto> getByUUIDs(Collection<UUID> uuids) {
         return userMapper.mapFromEntityToDto(userRepository.findAllByUuidIn(uuids));
     }
 
     @Override
+    @Transactional
     public UserResponseDto create(UserCreateRequestDto userCreateRequestDto) {
-        return userMapper.mapFromEntityToDto(userRepository.save(userMapper.mapFromRequestToEntity(userCreateRequestDto)));
+        return userMapper.mapFromEntityToDto(userRepository.save(userMapper.mapFromCreationRequestToEntity(userCreateRequestDto)));
     }
 
     @Transactional
@@ -51,19 +57,21 @@ public class UserServiceImp implements UserService {
 
     //TODO: refactorer cette methode ou la retirer
     @Override
-    public UserResponseDto update(UserCreateRequestDto userCreateRequestDto) {
-        return userMapper.mapFromEntityToDto(userRepository.save(userMapper.mapFromRequestToEntity(userCreateRequestDto)));
+    @Transactional
+    public UserResponseDto update(final UserUpdateRequestDto userCreateRequestDto) {
+        return userMapper.mapFromEntityToDto(userRepository.save(userMapper.mapFromUpdateRequestToEntity(userCreateRequestDto)));
     }
 
     @Override
+    @Transactional
     public void deleteByUUID(UUID uuid) {
         userRepository.deleteByUuid(uuid);
     }
 
     @Override
+    @Transactional
     public void deleteByUUIDs(Collection<UUID> uuids) {
         userRepository.deleteAllByUuidIn(uuids);
     }
-
 
 }
