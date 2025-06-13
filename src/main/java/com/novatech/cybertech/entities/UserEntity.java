@@ -12,49 +12,49 @@ import java.util.List;
 @Entity
 @Getter
 @SuperBuilder
-@EqualsAndHashCode
 @AllArgsConstructor
-@Table(name = "userTable")
 @RequiredArgsConstructor
-@ToString(callSuper = true)
+@Table(name = "userTable")
+@ToString(callSuper = true, exclude = {"cartEntities", "orderEntities", "reviewEntities", "bankCardEntities"})
+@EqualsAndHashCode(callSuper = true, exclude = {"cartEntities", "orderEntities", "reviewEntities", "bankCardEntities"})
 public class UserEntity extends BaseEntity {
 
-    @Column(name = "email", nullable = false, columnDefinition = "char(50)")
+    @Column(name = "email", nullable = false, unique = true, length = 50) // Email devrait être unique
     private String email;
 
-    @Column(name = "firstName", columnDefinition = "char(15)")
+    @Column(name = "firstName", length = 50)
     private String firstName;
 
-    @Column(name = "lastName", columnDefinition = "char(15)")
+    @Column(name = "lastName", length = 50)
     private String lastName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "sex", nullable = false)
     private Sex sex;
 
-    @Column(name = "address", columnDefinition = "char(50)")
+    @Column(name = "address", length = 255)
     private String address;
 
-    @Column(name = "birthDate", columnDefinition = "DATE")
+    @Temporal(TemporalType.DATE)
+    @Column(name = "birthDate")
     private Date birthDate;
 
-    @Column(name = "password", columnDefinition = "char(36)")
+    @Column(name = "password", length = 100)
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
 
-
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartEntity> cartEntities;
 
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderEntity> orderEntities;
 
-    @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEntity> reviewEntities;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BankCardEntity> bankCardEntities;
 }

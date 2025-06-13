@@ -1,4 +1,4 @@
-package com.novatech.cybertech.dto.request;
+package com.novatech.cybertech.dto.request.user;
 
 import com.novatech.cybertech.entities.enums.Sex;
 import jakarta.validation.constraints.*;

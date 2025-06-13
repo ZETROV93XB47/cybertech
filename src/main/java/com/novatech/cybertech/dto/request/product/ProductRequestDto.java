@@ -1,4 +1,4 @@
-package com.novatech.cybertech.dto.request;
+package com.novatech.cybertech.dto.request.product;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequestDto {
-    @NotNull(message = "User UUID cannot be null")
-    private UUID userUuid;
+public class ProductRequestDto {
+    @NotNull(message = "product UUID cannot be null")
+    private UUID productUuid;
 }
