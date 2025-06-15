@@ -2,7 +2,7 @@ package com.novatech.cybertech.services.core;
 
 import java.util.Collection;
 
-public interface BaseService<T, U, V, W> {
+public interface BaseService<T, U, W, V> {
 
     Collection<V> getAll();
 

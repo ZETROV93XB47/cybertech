@@ -3,7 +3,7 @@ package com.novatech.cybertech.api.controllers;
 import com.novatech.cybertech.api.controllers.spec.UserControllerApiSpec;
 import com.novatech.cybertech.dto.request.user.UserCreateRequestDto;
 import com.novatech.cybertech.dto.request.user.UserUpdateRequestDto;
-import com.novatech.cybertech.dto.response.UserResponseDto;
+import com.novatech.cybertech.dto.response.user.UserResponseDto;
 import com.novatech.cybertech.services.implementation.UserServiceImp;
 import com.novatech.cybertech.utils.DataGenerator;
 import io.swagger.v3.oas.annotations.Operation;

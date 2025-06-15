@@ -1,6 +1,7 @@
 package com.novatech.cybertech.dto.request.user;
 
 import com.novatech.cybertech.entities.enums.Sex;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +19,9 @@ public class UserUpdateRequestDto {
 // L'email est souvent non modifiable ou nécessite un processus de vérification séparé
 //@Email(message = "Email should be valid")
 // private String email;
+
+    @NotNull(message = "User UUID cannot be null")
+    private UUID userUuid;
 
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
     private String firstName; // Peut être null si non modifié

@@ -3,7 +3,7 @@ package com.novatech.cybertech.services.implementation;
 
 import com.novatech.cybertech.dto.request.user.UserCreateRequestDto;
 import com.novatech.cybertech.dto.request.user.UserUpdateRequestDto;
-import com.novatech.cybertech.dto.response.UserResponseDto;
+import com.novatech.cybertech.dto.response.user.UserResponseDto;
 import com.novatech.cybertech.entities.UserEntity;
 import com.novatech.cybertech.exceptions.UserNotFoundException;
 import com.novatech.cybertech.mappers.entity.UserMapper;
@@ -35,7 +35,7 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserResponseDto getByUUID(UUID uuid) {
-        return userMapper.mapFromEntityToDto(userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException("No user with the UUID : {} found", uuid)));
+        return userMapper.mapFromEntityToDto(userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException("No user with the UUID : " + uuid + " found")));
     }
 
     @Override

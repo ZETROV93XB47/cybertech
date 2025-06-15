@@ -1,4 +1,4 @@
-package com.novatech.cybertech.dto.response;
+package com.novatech.cybertech.dto.response.order;
 
 import com.novatech.cybertech.entities.enums.OrderStatus;
 import lombok.AllArgsConstructor;

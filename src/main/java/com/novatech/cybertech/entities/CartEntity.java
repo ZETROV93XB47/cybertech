@@ -37,4 +37,6 @@ public class CartEntity extends BaseEntity {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CartItemEntity> cartItems;
 
+    //@OneToOne(mappedBy = "cartEntity")
+    //private OrderEntity orderEntity;
 }

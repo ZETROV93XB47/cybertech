@@ -8,10 +8,12 @@ import static java.util.Arrays.stream;
 @Getter
 @RequiredArgsConstructor
 public enum OrderStatus {
-    PENDING(1),
-    SHIPPED(2),
-    DELIVERED(3),
-    CANCELLED(4);
+    PENDING_PAYMENT(1),
+    PROCESSING(2),
+    SHIPPED(3),
+    DELIVERED(4),
+    CANCELED(5),
+    REFUNDED(6);
 
     private final Integer code;
 

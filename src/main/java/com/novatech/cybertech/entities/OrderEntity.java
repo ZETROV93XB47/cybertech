@@ -17,13 +17,16 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "orderTable")
 @ToString(callSuper = true)
-public class OrderEntity extends BaseEntity {
+public class OrderEntity extends BaseEntity {//Est ce qu'il y a un intéret à garder la partie cart dans ce cas ? tous les éléments commandés par le user sont dans son order
 
     @Column(name = "orderDate", nullable = false)
     private LocalDateTime orderDate;
 
     @Column(name = "totalAmount", nullable = false)
-    private BigDecimal totalAmount;
+    private BigDecimal totalAmount = BigDecimal.valueOf(0);
+
+    @Column(name = "shippingAddress", nullable = false)
+    private String shippingAddress;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -40,4 +43,10 @@ public class OrderEntity extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "paymentId")
     private PaymentEntity paymentEntity;
+
+    /*
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cartId")
+    private CartEntity cartEntity;
+     */
 }
