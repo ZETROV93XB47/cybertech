@@ -13,8 +13,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "bankCardTable")
-@ToString(callSuper = true, exclude = {"userEntity"}) // Exclure userEntity pour éviter les boucles
-@EqualsAndHashCode(callSuper = true, exclude = {"userEntity"}) // Exclure userEntity pour éviter les boucles
+@ToString(callSuper = true, exclude = {"userEntity"})
+@EqualsAndHashCode(callSuper = true, exclude = {"userEntity"})
 public class BankCardEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,8 +30,8 @@ public class BankCardEntity extends BaseEntity {
     @Column(name = "expiryDate", nullable = false, length = 7) // Format MM/YYYY
     private String expiryDate;
 
-    @Column(name = "cvv", nullable = false, length = 4)
-    private String cvv;
+//    @Column(name = "cvv", nullable = false, length = 4)
+//    private String cvv; //faut pas stocker ça
 
     @Enumerated(EnumType.STRING)
     @Column(name = "cardType", nullable = false)

@@ -1,163 +1,155 @@
--- Désactiver temporairement les vérifications de clés étrangères pour le DROP
-SET FOREIGN_KEY_CHECKS=0;
 
--- Supprimer les tables si elles existent (dans l'ordre inverse des dépendances ou avec CASCADE si supporté)
-DROP TABLE IF EXISTS review;
-DROP TABLE IF EXISTS order_item;
-DROP TABLE IF EXISTS cart_item;
-DROP TABLE IF EXISTS `order_table`; -- 'order' est un mot-clé SQL, donc on l'échappe
-DROP TABLE IF EXISTS payment;
-DROP TABLE IF EXISTS cart_table; -- Nom de la table de CartEntity
-DROP TABLE IF EXISTS product_table; -- Nom de la table de ProductEntity
-DROP TABLE IF EXISTS `user_table`; -- Supposons que UserEntity utilise user_table
-
--- Réactiver les vérifications de clés étrangères
-SET FOREIGN_KEY_CHECKS=1;
-
--- Création de la table User (supposée UserEntity)
-CREATE TABLE `user_table` (
-    -- Colonnes héritées de BaseEntity
+-- Table pour l'entité OrderEntity
+CREATE TABLE orderTable (
+    -- Colonnes de BaseEntity
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     uuid BINARY(16) NOT NULL UNIQUE,
 
-    -- Colonnes spécifiques à UserEntity (basé sur User.java model)
-    email VARCHAR(255) NOT NULL UNIQUE,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100) NOT NULL,
-    sex VARCHAR(10), -- Pour l'enum Sex
-    address VARCHAR(255),
-    birth_date DATE,
-    password VARCHAR(255) NOT NULL, -- Devrait stocker un hash sécurisé
-    role VARCHAR(50) NOT NULL, -- Pour l'enum Role
+    -- Colonnes spécifiques à OrderEntity
+    orderDate DATETIME NOT NULL,
+    totalAmount DECIMAL(19, 4) NOT NULL DEFAULT 0.00,
+    shippingAddress VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL,
 
-    INDEX idx_user_email (email)
+    -- Clés étrangères
+    userId BIGINT,
+    paymentId BIGINT UNIQUE, -- La contrainte UNIQUE est cruciale pour la relation @OneToOne
+
+    -- Définition des contraintes de clé étrangère
+    CONSTRAINT fk_order_user FOREIGN KEY (userId) REFERENCES user_entity(id),
+    CONSTRAINT fk_order_payment FOREIGN KEY (paymentId) REFERENCES payment_entity(id)
 );
 
--- Création de la table Product
-CREATE TABLE product_table (
-    -- Colonnes héritées de BaseEntity
+
+
+-- ========= TABLES PRINCIPALES DÉFINIES DANS LA QUESTION =========
+
+-- Table pour l'entité UserEntity
+CREATE TABLE userTable (
+    -- Colonnes de BaseEntity
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    uuid BINARY(16) NOT NULL UNIQUE,
+
+    -- Colonnes spécifiques à UserEntity
+    email VARCHAR(50) NOT NULL UNIQUE,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    sex VARCHAR(20) NOT NULL,
+    address VARCHAR(255),
+    birthDate DATE,
+    password VARCHAR(100),
+    role VARCHAR(50) NOT NULL
+);
+
+-- Table pour l'entité ProductEntity
+CREATE TABLE productTable (
+    -- Colonnes de BaseEntity
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     uuid BINARY(16) NOT NULL UNIQUE,
 
     -- Colonnes spécifiques à ProductEntity
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    brand VARCHAR(100) NOT NULL,
-    category VARCHAR(100) NOT NULL,
+    brand VARCHAR(255) NOT NULL,
+    category VARCHAR(255) NOT NULL,
     cpu VARCHAR(255) NOT NULL,
-    gpu CHAR(50) NOT NULL,
-    ram CHAR(50) NOT NULL,
-    ssd CHAR(50) NOT NULL,
-    display_type VARCHAR(100),
-    display_size VARCHAR(100),
-    os CHAR(20) NOT NULL,
+    gpu CHAR(50) NOT NULL,         -- Respecte columnDefinition = "char(50)"
+    ram CHAR(50) NOT NULL,         -- Respecte columnDefinition = "char(50)"
+    ssd CHAR(50) NOT NULL,         -- Respecte columnDefinition = "char(50)"
+    displayType VARCHAR(255),
+    displaySize VARCHAR(255),
+    os CHAR(20) NOT NULL,           -- Respecte columnDefinition = "char(20)"
     connectivity VARCHAR(255),
-    photo VARCHAR(255),
-    stock INT NOT NULL DEFAULT 0,
-    description TEXT,
+    photo VARCHAR(255),            -- Typiquement une URL ou un chemin de fichier
+    stock INT,
+    description TEXT,              -- Respecte columnDefinition = "text"
 
-    INDEX idx_product_category (category),
-    INDEX idx_product_brand (brand)
+    INDEX idx_product_brand (brand),      -- Index pour la recherche par marque
+    INDEX idx_product_category (category) -- Index pour la recherche par catégorie
 );
 
--- Création de la table Cart
-CREATE TABLE cart_table (
-    -- Colonnes héritées de BaseEntity
+-- Table pour l'entité OrderItemEntity
+CREATE TABLE orderItemTable (
+    -- Colonnes de BaseEntity
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     uuid BINARY(16) NOT NULL UNIQUE,
 
-    -- Colonnes spécifiques à CartEntity
-    user_id BIGINT NOT NULL,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME,
-    is_checked_out BOOLEAN NOT NULL DEFAULT FALSE
-);
-
--- Création de la table CartItem (supposée CartItemEntity)
-CREATE TABLE cart_item (
-    -- Colonnes héritées de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uuid BINARY(16) NOT NULL UNIQUE,
-
-    -- Colonnes spécifiques
-    cart_id BIGINT NOT NULL,
-    product_id BIGINT NOT NULL,
-    quantity INT NOT NULL DEFAULT 1
-);
-
--- Création de la table Payment (supposée PaymentEntity)
-CREATE TABLE payment (
-    -- Colonnes héritées de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uuid BINARY(16) NOT NULL UNIQUE,
-
-    -- Colonnes spécifiques
-    payment_date DATETIME NOT NULL,
-    amount DECIMAL(10, 2) NOT NULL,
-    payment_method VARCHAR(50),
-    status VARCHAR(50) NOT NULL -- Pour l'enum PaymentStatus (SUCCESS, FAILED)
-);
-
--- Création de la table Order (supposée OrderEntity)
-CREATE TABLE `order_table` (
-    -- Colonnes héritées de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uuid BINARY(16) NOT NULL UNIQUE,
-
-    -- Colonnes spécifiques
-    user_id BIGINT NOT NULL,
-    payment_id BIGINT UNIQUE, -- Une commande peut être liée à un paiement (OneToOne)
-    order_date DATETIME NOT NULL,
-    total_amount DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(50) NOT NULL -- Pour l'enum OrderStatus
-);
-
--- Création de la table OrderItem (supposée OrderItemEntity)
-CREATE TABLE order_item (
-    -- Colonnes héritées de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uuid BINARY(16) NOT NULL UNIQUE,
-
-    -- Colonnes spécifiques
-    order_id BIGINT NOT NULL,
-    product_id BIGINT NOT NULL,
+    -- Colonnes spécifiques à OrderItemEntity
     quantity INT NOT NULL,
-    price_per_unit DECIMAL(10, 2) NOT NULL -- Prix au moment de la commande
+    unitPrice DECIMAL(10, 2) NOT NULL,
+    subtotal DECIMAL(10, 2) NOT NULL,
+
+    -- Clés étrangères
+    orderId BIGINT NOT NULL,
+    productEntity BIGINT NOT NULL,
+
+    -- Définition des contraintes de clé étrangère
+    CONSTRAINT fk_orderitem_order_id FOREIGN KEY (orderId) REFERENCES orderTable(id),
+    CONSTRAINT fk_orderitem_product_id FOREIGN KEY (productEntity) REFERENCES productTable(id)
 );
 
--- Création de la table Review (supposée ReviewEntity)
-CREATE TABLE review (
-    -- Colonnes héritées de BaseEntity
+-- ========= TABLE POUR L'ENTITÉ PaymentEntity =========
+
+CREATE TABLE paymentTable (
+    -- Colonnes de BaseEntity
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     uuid BINARY(16) NOT NULL UNIQUE,
 
-    -- Colonnes spécifiques
-    user_id BIGINT NOT NULL,
-    product_id BIGINT NOT NULL,
-    rating INT NOT NULL, -- ex: 1 à 5
-    comment TEXT,
-    review_date DATETIME NOT NULL
+    -- Colonnes spécifiques à PaymentEntity
+    amount DECIMAL(19, 4) NOT NULL, -- Précision standard pour les montants
+    paymentType VARCHAR(50) NOT NULL,
+    paymentStatus VARCHAR(50) NOT NULL,
+    paymentDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP -- Traduction de @CreationTimestamp
+
+    -- Note : La colonne pour la relation @OneToOne se trouve dans la table 'orderTable'
+    -- car cette entité est le côté "mappedBy" (inverse) de la relation.
 );
 
 
--- Définition des clés étrangères
--- (Appliquer après la création de toutes les tables pour éviter les dépendances circulaires)
+-- ========= TABLE POUR L'ENTITÉ BankCardEntity =========
 
-ALTER TABLE cart_table
-    ADD CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES `user_table`(id) ON DELETE CASCADE;
+CREATE TABLE bankCardTable (
+    -- Colonnes de BaseEntity
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    uuid BINARY(16) NOT NULL UNIQUE,
 
-ALTER TABLE cart_item
-    ADD CONSTRAINT fk_cartitem_cart FOREIGN KEY (cart_id) REFERENCES cart_table(id) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_cartitem_product FOREIGN KEY (product_id) REFERENCES product_table(id) ON DELETE CASCADE;
+    -- Colonnes spécifiques à BankCardEntity
+    cardHolderName VARCHAR(100) NOT NULL,
+    cardNumber VARCHAR(19) NOT NULL,
+    expiryDate VARCHAR(7) NOT NULL, -- Format MM/YYYY
+    cvv VARCHAR(4) ,
+    cardType VARCHAR(50) NOT NULL,
+    isDefault BOOLEAN NOT NULL DEFAULT FALSE,
 
-ALTER TABLE `order_table`
-    ADD CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES `user_table`(id) ON DELETE RESTRICT, -- ou CASCADE selon la logique métier
-    ADD CONSTRAINT fk_order_payment FOREIGN KEY (payment_id) REFERENCES payment(id) ON DELETE SET NULL; -- Si un paiement est supprimé, la commande n'est plus liée
+    -- Clé étrangère vers UserEntity
+    user_id BIGINT NOT NULL,
 
-ALTER TABLE order_item
-    ADD CONSTRAINT fk_orderitem_order FOREIGN KEY (order_id) REFERENCES `order_table`(id) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_orderitem_product FOREIGN KEY (product_id) REFERENCES product_table(id) ON DELETE RESTRICT;
+    -- Définition de la contrainte de clé étrangère
+    CONSTRAINT fk_bankcard_user FOREIGN KEY (user_id) REFERENCES userTable(id)
+);
 
-ALTER TABLE review
-    ADD CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES `user_table`(id) ON DELETE CASCADE,
-    ADD CONSTRAINT fk_review_product FOREIGN KEY (product_id) REFERENCES product_table(id) ON DELETE CASCADE;
+
+-- ========= TABLE POUR L'ENTITÉ ReviewEntity =========
+
+CREATE TABLE reviewTable (
+    -- Colonnes de BaseEntity
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    uuid BINARY(16) NOT NULL UNIQUE,
+
+    -- Colonnes spécifiques à ReviewEntity
+    rating INT NOT NULL,
+    comment TEXT,
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,         -- Traduction de @CreationTimestamp
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Traduction de @UpdateTimestamp
+
+    -- Clés étrangères
+    userId BIGINT NOT NULL,
+    reviewId BIGINT NOT NULL, -- Nom de colonne basé sur votre @JoinColumn
+
+    -- Définition des contraintes de clé étrangère
+    CONSTRAINT fk_review_user FOREIGN KEY (userId) REFERENCES userTable(id),
+    CONSTRAINT fk_review_product FOREIGN KEY (reviewId) REFERENCES productTable(id),
+
+    -- Contrainte pour valider le rating au niveau de la base de données
+    CONSTRAINT chk_rating CHECK (rating >= 1 AND rating <= 5)
+);

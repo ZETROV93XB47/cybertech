@@ -70,13 +70,12 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "description", columnDefinition = "text")
     private String description;
 
-
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<CartItemEntity> cartItemEntities;
-
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItemEntity> orderItemEntities;
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ReviewEntity> reviewEntities;
 }
+
+//@OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//private List<CartItemEntity> cartItemEntities;

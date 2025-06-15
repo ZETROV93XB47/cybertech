@@ -1,28 +1,29 @@
 services:
 
-#MYSQL
+  #MYSQL
   mysql:
     image: ${MYSQL_CONTAINER_VERSION}
     container_name: ${MYSQL_CONTAINER_NAME}
     restart: unless-stopped
     environment:
-#      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      #      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-#      MYSQL_USER: ${MYSQL_USER}
-#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      #      MYSQL_USER: ${MYSQL_USER}
+      #      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ALLOW_EMPTY_PASSWORD: true
     ports:
       - "${MYSQL_PORT}:3306" # Mappe le port de l'hôte (défini dans .env) au port 3306 du conteneur
     volumes:
-#      - mysql_data:/var/lib/mysql # Persistance des données MySQL
+      #      - mysql_data:/var/lib/mysql # Persistance des données MySQL
       - $PWD/../sql/databaseSchemaInitFile.sql:/docker-entrypoint-initdb.d/1_databaseSchemaInitFile.sql
 
-#    healthcheck:
-#      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#      start_period: 30s # Donne du temps à MySQL pour démarrer avant le premier check
+  moderation-api:
+    build:
+      context: ./python
+    container_name: moderation-api
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
 
 #volumes:
 #  mysql_data: # Définit un volume nommé pour la persistance des données

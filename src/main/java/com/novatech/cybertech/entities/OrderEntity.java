@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+//Est ce qu'il y a un intéret à garder la partie cart dans ce cas ? tous les éléments commandés par le user sont dans son order
+
 @Entity
 @Getter
 @SuperBuilder
@@ -17,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "orderTable")
 @ToString(callSuper = true)
-public class OrderEntity extends BaseEntity {//Est ce qu'il y a un intéret à garder la partie cart dans ce cas ? tous les éléments commandés par le user sont dans son order
+public class OrderEntity extends BaseEntity {
 
     @Column(name = "orderDate", nullable = false)
     private LocalDateTime orderDate;
@@ -43,10 +45,10 @@ public class OrderEntity extends BaseEntity {//Est ce qu'il y a un intéret à g
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "paymentId")
     private PaymentEntity paymentEntity;
+}
 
     /*
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cartId")
     private CartEntity cartEntity;
      */
-}
