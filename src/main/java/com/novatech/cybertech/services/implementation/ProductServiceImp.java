@@ -29,36 +29,36 @@ public class ProductServiceImp implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public Collection<ProductResponseDto> getAll() {
-        return productMapper.mapFromEntityToDto(productRepository.findAll());
+        return productMapper.mapFromEntityToResponseDto(productRepository.findAll());
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProductResponseDto getByUUID(UUID uuid) {
-        return productMapper.mapFromEntityToDto(productRepository.findByUuid(uuid).orElseThrow(() -> new ProductNotFoundException("No product with the UUID : " + uuid + " found")));
+        return productMapper.mapFromEntityToResponseDto(productRepository.findByUuid(uuid).orElseThrow(() -> new ProductNotFoundException("No product with the UUID : " + uuid + " found")));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Collection<ProductResponseDto> getByUUIDs(Collection<UUID> uuids) {
-        return productMapper.mapFromEntityToDto(productRepository.findAllByUuidIn(uuids));
+        return productMapper.mapFromEntityToResponseDto(productRepository.findAllByUuidIn(uuids));
     }
 
     @Override
     @Transactional
     public ProductResponseDto create(ProductCreateRequestDto productCreateRequestDto) {
-        return productMapper.mapFromEntityToDto(productRepository.save(productMapper.mapFromCreationRequestToEntity(productCreateRequestDto)));
+        return productMapper.mapFromEntityToResponseDto(productRepository.save(productMapper.mapFromCreationRequestToEntity(productCreateRequestDto)));
     }
 
     @Transactional
     public Collection<ProductResponseDto> createAutomatically(Collection<ProductEntity> products) {
-        return new ArrayList<>(productMapper.mapFromEntityToDto(products.stream().map(productRepository::save).toList()));
+        return new ArrayList<>(productMapper.mapFromEntityToResponseDto(products.stream().map(productRepository::save).toList()));
     }
 
     @Override
     @Transactional
     public ProductResponseDto update(final ProductUpdateRequestDto productCreateRequestDto) {
-        return productMapper.mapFromEntityToDto(productRepository.save(productMapper.mapFromUpdateRequestToEntity(productCreateRequestDto)));
+        return productMapper.mapFromEntityToResponseDto(productRepository.save(productMapper.mapFromUpdateRequestToEntity(productCreateRequestDto)));
     }
 
     @Override

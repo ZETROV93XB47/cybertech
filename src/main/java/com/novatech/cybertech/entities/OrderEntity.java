@@ -1,6 +1,8 @@
 package com.novatech.cybertech.entities;
 
+import com.novatech.cybertech.entities.enums.DiscountType;
 import com.novatech.cybertech.entities.enums.OrderStatus;
+import com.novatech.cybertech.entities.enums.ShippingType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -34,6 +36,14 @@ public class OrderEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @Column(name = "shippingType", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ShippingType shippingType;
+
+    @Column(name = "discountType", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DiscountType discountType;
+
     @ManyToOne
     @JoinColumn(name = "userId")
     private UserEntity userEntity;
@@ -42,7 +52,7 @@ public class OrderEntity extends BaseEntity {
     @ToString.Exclude
     private List<OrderItemEntity> orderItemEntities;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "paymentId")
     private PaymentEntity paymentEntity;
 }

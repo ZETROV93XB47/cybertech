@@ -28,36 +28,36 @@ public class CartServiceImp implements CartService {
     @Override
     @Transactional(readOnly = true)
     public Collection<CartResponseDto> getAll() {
-        return cartMapper.mapFromEntityToDto(cartRepository.findAll());
+        return cartMapper.mapFromEntityToResponseDto(cartRepository.findAll());
     }
 
     @Override
     @Transactional(readOnly = true)
     public CartResponseDto getByUUID(UUID uuid) {
-        return cartMapper.mapFromEntityToDto(cartRepository.findByUuid(uuid).orElseThrow(() -> new CartNotFoundException("No cart with the UUID : " + uuid + " found")));
+        return cartMapper.mapFromEntityToResponseDto(cartRepository.findByUuid(uuid).orElseThrow(() -> new CartNotFoundException("No cart with the UUID : " + uuid + " found")));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Collection<CartResponseDto> getByUUIDs(Collection<UUID> uuids) {
-        return cartMapper.mapFromEntityToDto(cartRepository.findAllByUuidIn(uuids));
+        return cartMapper.mapFromEntityToResponseDto(cartRepository.findAllByUuidIn(uuids));
     }
 
     @Override
     @Transactional
     public CartResponseDto create(CartCreateRequestDto cartCreateRequestDto) {
-        return cartMapper.mapFromEntityToDto(cartRepository.save(cartMapper.mapFromCreationRequestToEntity(cartCreateRequestDto)));
+        return cartMapper.mapFromEntityToResponseDto(cartRepository.save(cartMapper.mapFromCreationRequestToEntity(cartCreateRequestDto)));
     }
 
     @Transactional
     public Collection<CartResponseDto> createAutomatically(Collection<CartEntity> carts) {
-        return new ArrayList<>(cartMapper.mapFromEntityToDto(carts.stream().map(cartRepository::save).toList()));
+        return new ArrayList<>(cartMapper.mapFromEntityToResponseDto(carts.stream().map(cartRepository::save).toList()));
     }
 
     @Override
     @Transactional
     public CartResponseDto update(final CartUpdateRequestDto cartCreateRequestDto) {
-        return cartMapper.mapFromEntityToDto(cartRepository.save(cartMapper.mapFromUpdateRequestToEntity(cartCreateRequestDto)));
+        return cartMapper.mapFromEntityToResponseDto(cartRepository.save(cartMapper.mapFromUpdateRequestToEntity(cartCreateRequestDto)));
     }
 
     @Override

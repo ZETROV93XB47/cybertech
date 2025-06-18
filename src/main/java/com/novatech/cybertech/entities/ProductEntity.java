@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
+@Setter
 @Getter
 @SuperBuilder
 @EqualsAndHashCode
@@ -65,7 +66,7 @@ public class ProductEntity extends BaseEntity {
     private String photo;
 
     @Column(name = "stock")
-    private int stock;
+    private Integer stock;
 
     @Column(name = "description", columnDefinition = "text")
     private String description;

@@ -29,37 +29,37 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Collection<UserResponseDto> getAll() {
-        return userMapper.mapFromEntityToDto(userRepository.findAll());
+        return userMapper.mapFromEntityToResponseDto(userRepository.findAll());
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserResponseDto getByUUID(UUID uuid) {
-        return userMapper.mapFromEntityToDto(userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException("No user with the UUID : " + uuid + " found")));
+        return userMapper.mapFromEntityToResponseDto(userRepository.findByUuid(uuid).orElseThrow(() -> new UserNotFoundException("No user with the UUID : " + uuid + " found")));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Collection<UserResponseDto> getByUUIDs(Collection<UUID> uuids) {
-        return userMapper.mapFromEntityToDto(userRepository.findAllByUuidIn(uuids));
+        return userMapper.mapFromEntityToResponseDto(userRepository.findAllByUuidIn(uuids));
     }
 
     @Override
     @Transactional
     public UserResponseDto create(UserCreateRequestDto userCreateRequestDto) {
-        return userMapper.mapFromEntityToDto(userRepository.save(userMapper.mapFromCreationRequestToEntity(userCreateRequestDto)));
+        return userMapper.mapFromEntityToResponseDto(userRepository.save(userMapper.mapFromCreationRequestToEntity(userCreateRequestDto)));
     }
 
     @Transactional
     public Collection<UserResponseDto> createAutomatically(Collection<UserEntity> users) {
-        return new ArrayList<>(userMapper.mapFromEntityToDto(users.stream().map(userRepository::save).toList()));
+        return new ArrayList<>(userMapper.mapFromEntityToResponseDto(users.stream().map(userRepository::save).toList()));
     }
 
     //TODO: refactorer cette methode ou la retirer
     @Override
     @Transactional
     public UserResponseDto update(final UserUpdateRequestDto userCreateRequestDto) {
-        return userMapper.mapFromEntityToDto(userRepository.save(userMapper.mapFromUpdateRequestToEntity(userCreateRequestDto)));
+        return userMapper.mapFromEntityToResponseDto(userRepository.save(userMapper.mapFromUpdateRequestToEntity(userCreateRequestDto)));
     }
 
     @Override

@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -60,6 +61,7 @@ public class UserController implements UserControllerApiSpec {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/create/auto", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserResponseDto>> createUserAutomatically() {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createAutomatically(DataGenerator.generateUsers(100)));

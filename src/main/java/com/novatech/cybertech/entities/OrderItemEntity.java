@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orderItemTable")
 @ToString(callSuper = true)
+@Table(name = "orderItemTable")
 public class OrderItemEntity extends BaseEntity {
 
     @Column(name = "quantity", nullable = false)
@@ -25,11 +25,11 @@ public class OrderItemEntity extends BaseEntity {
     @Column(name = "subtotal", precision = 10, scale = 2, nullable = false)
     private BigDecimal subtotal;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "orderId", nullable = false)
     private OrderEntity orderEntity;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "productEntity", nullable = false)
     private ProductEntity productEntity;
 }

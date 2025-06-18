@@ -19,12 +19,20 @@ services:
 
   moderation-api:
     build:
-      context: ./python
+      context:  ../../java/com/novatech/cybertech/api/external/moderation/
+
     container_name: moderation-api
     ports:
       - "5000:5000"
     restart: unless-stopped
 
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Interface web
 #volumes:
 #  mysql_data: # Définit un volume nommé pour la persistance des données
 #    driver: local

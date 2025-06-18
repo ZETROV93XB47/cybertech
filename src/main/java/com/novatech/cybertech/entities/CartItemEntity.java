@@ -24,12 +24,12 @@ public class CartItemEntity extends BaseEntity {
     @Column(name = "unitPrice", precision = 10, scale = 2, nullable = false)
     private BigDecimal unitPrice;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "cartId", nullable = false)
     @ToString.Exclude
     private CartEntity cart;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "productEntity", nullable = false)
     @ToString.Exclude
     private ProductEntity productEntity;

@@ -1,7 +1,14 @@
 from flask import Flask, request, jsonify
 from transformers import pipeline
+from flask_debugtoolbar import DebugToolbarExtension
+import logging
+
 
 app = Flask(__name__)
+app.debug = True
+app.secret_key = 'development key'
+
+toolbar = DebugToolbarExtension(app)
 classifier = pipeline("text-classification", model="unitary/toxic-bert")
 
 @app.route('/analyze', methods=['POST'])
@@ -14,8 +21,9 @@ def analyze_comment():
     result = classifier(comment)[0]
     return jsonify({
         "label": result['label'],
-        "score": result['score'],
-        "is_hateful": result['label'] == "toxic" and result['score'] > 0.8
+        "score": result['score']
+
+        #"is_hateful": result['label'] == "toxic" and result['score'] > 0.8
     })
 
 if __name__ == "__main__":

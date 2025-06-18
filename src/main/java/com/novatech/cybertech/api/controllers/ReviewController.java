@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 import static com.novatech.cybertech.constants.CyberTechAppConstants.REVIEW_CONTROLLER_BASE_PATH;
+import static com.novatech.cybertech.utils.DataGenerator.generateReviewEntity;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(REVIEW_CONTROLLER_BASE_PATH)
@@ -50,6 +52,12 @@ public class ReviewController implements ReviewControllerApiSpec {
     public ResponseEntity<Void> deleteReviewByUuid(UUID reviewUuid) {
         reviewService.deleteByUUID(reviewUuid);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/create/auto", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReviewResponseDto> createReview() {
+        log.info("The following class has been called : {}", this.getClass().getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.saveReview());
     }
 
 }

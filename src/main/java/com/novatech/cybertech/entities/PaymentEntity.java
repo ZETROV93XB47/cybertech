@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Setter
 @Getter
 @SuperBuilder
 @EqualsAndHashCode
@@ -32,7 +33,7 @@ public class PaymentEntity extends BaseEntity {
     @Column(name = "paymentStatus", nullable = false)
     private PaymentStatus paymentStatus; // "SUCCESS", "FAILED", etc.
 
-    @OneToOne(mappedBy = "paymentEntity")
+    @OneToOne(mappedBy = "paymentEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private OrderEntity orderEntity;
 
     @CreationTimestamp

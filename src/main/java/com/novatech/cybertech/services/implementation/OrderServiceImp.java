@@ -5,12 +5,15 @@ import com.novatech.cybertech.dto.request.order.OrderCreateRequestDto;
 import com.novatech.cybertech.dto.request.order.OrderUpdateRequestDto;
 import com.novatech.cybertech.dto.response.order.OrderResponseDto;
 import com.novatech.cybertech.entities.OrderEntity;
+import com.novatech.cybertech.events.OrderCreatedEvent;
 import com.novatech.cybertech.exceptions.OrderNotFoundException;
 import com.novatech.cybertech.mappers.entity.OrderMapper;
 import com.novatech.cybertech.repositories.OrderRepository;
 import com.novatech.cybertech.services.core.OrderService;
+import com.novatech.cybertech.validator.core.OrderValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,53 +26,63 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderServiceImp implements OrderService {
 
-    private final OrderMapper productMapper;
-    private final OrderRepository productRepository;
+    private final OrderMapper orderMapper;
+    private final OrderRepository orderRepository;
+    private final OrderValidator orderValidatorChain;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional(readOnly = true)
     public Collection<OrderResponseDto> getAll() {
-        return productMapper.mapFromEntityToDto(productRepository.findAll());
+        return orderMapper.mapFromEntityToResponseDto(orderRepository.findAll());
     }
 
     @Override
     @Transactional(readOnly = true)
     public OrderResponseDto getByUUID(UUID uuid) {
-        return productMapper.mapFromEntityToDto(productRepository.findByUuid(uuid).orElseThrow(() -> new OrderNotFoundException("No product with the UUID : " + uuid + " found")));
+        return orderMapper.mapFromEntityToResponseDto(orderRepository.findByUuid(uuid).orElseThrow(() -> new OrderNotFoundException("No product with the UUID : " + uuid + " found")));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Collection<OrderResponseDto> getByUUIDs(Collection<UUID> uuids) {
-        return productMapper.mapFromEntityToDto(productRepository.findAllByUuidIn(uuids));
+        return orderMapper.mapFromEntityToResponseDto(orderRepository.findAllByUuidIn(uuids));
     }
 
     @Override
     @Transactional
-    public OrderResponseDto create(OrderCreateRequestDto productCreateRequestDto) {
-        return productMapper.mapFromEntityToDto(productRepository.save(productMapper.mapFromCreationRequestToEntity(productCreateRequestDto)));
+    public OrderResponseDto create(OrderCreateRequestDto orderCreateRequestDto) {
+        OrderEntity orderEntity = orderMapper.mapFromCreationRequestToEntity(orderCreateRequestDto);
+
+        orderValidatorChain.validate(orderEntity);
+
+        OrderEntity savedOrder = orderRepository.save(orderEntity);
+
+        eventPublisher.publishEvent(new OrderCreatedEvent(this, savedOrder));
+
+        return orderMapper.mapFromEntityToResponseDto(savedOrder);
     }
 
     @Transactional
     public Collection<OrderResponseDto> createAutomatically(Collection<OrderEntity> products) {
-        return new ArrayList<>(productMapper.mapFromEntityToDto(products.stream().map(productRepository::save).toList()));
+        return new ArrayList<>(orderMapper.mapFromEntityToResponseDto(products.stream().map(orderRepository::save).toList()));
     }
 
     @Override
     @Transactional
     public OrderResponseDto update(final OrderUpdateRequestDto productCreateRequestDto) {
-        return productMapper.mapFromEntityToDto(productRepository.save(productMapper.mapFromUpdateRequestToEntity(productCreateRequestDto)));
+        return orderMapper.mapFromEntityToResponseDto(orderRepository.save(orderMapper.mapFromUpdateRequestToEntity(productCreateRequestDto)));
     }
 
     @Override
     @Transactional
     public void deleteByUUID(UUID uuid) {
-        productRepository.deleteByUuid(uuid);
+        orderRepository.deleteByUuid(uuid);
     }
 
     @Override
     @Transactional
     public void deleteByUUIDs(Collection<UUID> uuids) {
-        productRepository.deleteAllByUuidIn(uuids);
+        orderRepository.deleteAllByUuidIn(uuids);
     }
 }

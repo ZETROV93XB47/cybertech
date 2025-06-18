@@ -37,6 +37,8 @@ CREATE TABLE userTable (
     sex VARCHAR(20) NOT NULL,
     address VARCHAR(255),
     birthDate DATE,
+    numberOfHatefulComments INT NOT NULL,
+    isActive BOOLEAN NOT NULL,
     password VARCHAR(100),
     role VARCHAR(50) NOT NULL
 );
@@ -141,6 +143,8 @@ CREATE TABLE reviewTable (
     comment TEXT,
     createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,         -- Traduction de @CreationTimestamp
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Traduction de @UpdateTimestamp
+
+    isDefault BOOLEAN NOT NULL DEFAULT FALSE,
 
     -- Clés étrangères
     userId BIGINT NOT NULL,

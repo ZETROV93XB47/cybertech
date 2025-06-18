@@ -46,6 +46,12 @@ public class UserEntity extends BaseEntity {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    @Column(name = "isActive", nullable = false)
+    private Boolean isActive = true;
+
+    @Column(name = "numberOfHatefulComments", nullable = false)
+    private int numberOfHatefulComments = 0;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderEntity> orderEntities;
 
