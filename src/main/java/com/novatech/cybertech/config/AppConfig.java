@@ -1,11 +1,9 @@
 package com.novatech.cybertech.config;
 
-import com.novatech.cybertech.annotation.DiscountTypeHandler;
-import com.novatech.cybertech.annotation.PaymentTypeHandler;
-import com.novatech.cybertech.annotation.ShippingTypeHandler;
-import com.novatech.cybertech.entities.enums.DiscountType;
-import com.novatech.cybertech.entities.enums.PaymentType;
-import com.novatech.cybertech.entities.enums.ShippingType;
+import com.novatech.cybertech.annotation.*;
+import com.novatech.cybertech.entities.enums.*;
+import com.novatech.cybertech.listener.Notification;
+import com.novatech.cybertech.listener.NotificationProcessor;
 import com.novatech.cybertech.services.core.PaymentService;
 import com.novatech.cybertech.strategy.discount.DiscountStrategy;
 import com.novatech.cybertech.strategy.shipping.ShippingStrategy;
@@ -69,6 +67,30 @@ public class AppConfig {
         Map<DiscountType, DiscountStrategy> map = new EnumMap<>(DiscountType.class);
         context.getBeansOfType(DiscountStrategy.class).forEach((name, bean) -> {
             DiscountTypeHandler annotation = bean.getClass().getAnnotation(DiscountTypeHandler.class);
+            if (annotation != null) {
+                map.put(annotation.value(), bean);
+            }
+        });
+        return map;
+    }
+
+    @Bean
+    public Map<NotificationType, Notification> getNotificationStrategies (final ApplicationContext context) {
+        Map<NotificationType, Notification> map = new EnumMap<>(NotificationType.class);
+        context.getBeansOfType(Notification.class).forEach((name, bean) -> {
+            NotificationTypeHandler annotation = bean.getClass().getAnnotation(NotificationTypeHandler.class);
+            if (annotation != null) {
+                map.put(annotation.value(), bean);
+            }
+        });
+        return map;
+    }
+
+    @Bean
+    public Map<CommunicationType, NotificationProcessor> getNotificationProcessorStrategies (final ApplicationContext context) {
+        Map<CommunicationType, NotificationProcessor> map = new EnumMap<>(CommunicationType.class);
+        context.getBeansOfType(NotificationProcessor.class).forEach((name, bean) -> {
+            CommunicationTypeHandler annotation = bean.getClass().getAnnotation(CommunicationTypeHandler.class);
             if (annotation != null) {
                 map.put(annotation.value(), bean);
             }

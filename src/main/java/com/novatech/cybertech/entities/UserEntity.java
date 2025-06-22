@@ -1,5 +1,6 @@
 package com.novatech.cybertech.entities;
 
+import com.novatech.cybertech.entities.enums.CommunicationType;
 import com.novatech.cybertech.entities.enums.Role;
 import com.novatech.cybertech.entities.enums.Sex;
 import jakarta.persistence.*;
@@ -46,8 +47,14 @@ public class UserEntity extends BaseEntity {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    @Column(name = "phoneNumber")
+    private Integer phoneNumber;
+
     @Column(name = "isActive", nullable = false)
     private Boolean isActive = true;
+
+    @Column(name = "favoriteCommunicationChanel", nullable = false)
+    private CommunicationType favoriteCommunicationChanel;
 
     @Column(name = "numberOfHatefulComments", nullable = false)
     private int numberOfHatefulComments = 0;
