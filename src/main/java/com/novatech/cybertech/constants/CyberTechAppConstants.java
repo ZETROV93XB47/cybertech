@@ -14,4 +14,6 @@ public class CyberTechAppConstants {
     public static final String ORDER_CONTROLLER_BASE_PATH = "/api/v1/services/order";
     public static final String REVIEW_CONTROLLER_BASE_PATH = "/api/v1/services/review";
 
+    public static final String PAYPAL_PAYMENT_CONTROLLER_BASE_PATH = "/api/v1/services/paypal";
+
 }

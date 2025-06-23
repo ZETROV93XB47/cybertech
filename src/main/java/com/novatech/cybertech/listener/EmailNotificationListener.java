@@ -29,6 +29,6 @@ public class EmailNotificationListener {
         model.put("orderId", savedOrder.getId());
         model.put("amount", savedOrder.getTotalAmount());
 
-        emailService.sendOrderConfirmationEmail(savedOrder.getUserEntity().getEmail(), model);
+        emailService.sendOrderConfirmationEmail(savedOrder.getUserEntity().getEmail(), model, "");
     }
 }

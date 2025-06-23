@@ -20,7 +20,7 @@ public class MailService {
 
     private final SpringTemplateEngine templateEngine;
 
-    public void sendOrderConfirmationEmail(String to, Map<String, Object> model) {
+    public void sendOrderConfirmationEmail(final String to, final Map<String, Object> model, final String emailSubject) {
         Context context = new Context();
         context.setVariables(model);
 
@@ -32,14 +32,13 @@ public class MailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(to);
-            helper.setSubject("Confirmation de votre commande");
+            helper.setSubject(emailSubject);
             helper.setText(content, true); // HTML content
         }
 
         catch (MessagingException e) {
             log.error("Erreur lors de l'envoi de l'e-mail", e);
         }
-
 
         javaMailSender.send(message);
     }

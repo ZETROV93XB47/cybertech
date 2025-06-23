@@ -22,6 +22,6 @@ public class StockValidator extends ChainableOrderValidator {
                 throw new IllegalStateException("Stock insuffisant pour le produit : " + product.getName());
             }
         }
-        next(order);
+        nextStep(order);
     }
 }

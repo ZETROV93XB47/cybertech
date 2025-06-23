@@ -14,7 +14,7 @@ import java.util.Map;
 public class NotificationStrategyFactory {
     private final Map<NotificationType, Notification> notificationTypeStrategyMap;
 
-    public Notification getStrategy(NotificationType type) {
+    public Notification getStrategy(final NotificationType type) {
         return notificationTypeStrategyMap.get(type);
     }
 

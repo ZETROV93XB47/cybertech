@@ -1,8 +1,6 @@
 package com.novatech.cybertech.notification;
 
 import com.novatech.cybertech.entities.NotificationContext;
-import com.novatech.cybertech.entities.enums.CommunicationType;
-import com.novatech.cybertech.entities.enums.NotificationType;
 import com.novatech.cybertech.exceptions.NoStrategyFoundForProcessingTheRequest;
 import com.novatech.cybertech.factory.NotificationProcessorStrategyFactory;
 import com.novatech.cybertech.factory.NotificationStrategyFactory;
@@ -12,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -22,7 +18,7 @@ public class NotificationDispatcher {
     private final NotificationStrategyFactory notificationStrategyFactory;
     private final NotificationProcessorStrategyFactory notificationProcessorStrategyFactory;
 
-    //We can directly use the twop following maps here
+    //We can directly use the two following maps here
     //private final Map<NotificationType, Notification> notificationStrategies;
     //private final Map<CommunicationType, NotificationProcessor> processorStrategies;
 

@@ -11,7 +11,7 @@ public abstract class ChainableOrderValidator implements OrderValidator {
         return this;
     }
 
-    protected void next(OrderEntity order) {
+    protected void nextStep(OrderEntity order) {
         if (next != null) next.validate(order);
     }
 }

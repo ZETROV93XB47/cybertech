@@ -14,6 +14,7 @@ import java.util.List;
 //Est ce qu'il y a un intéret à garder la partie cart dans ce cas ? tous les éléments commandés par le user sont dans son order
 
 @Entity
+@Setter
 @Getter
 @SuperBuilder
 @EqualsAndHashCode

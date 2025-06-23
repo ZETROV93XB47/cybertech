@@ -10,6 +10,6 @@ public class ActiveUserValidator extends ChainableOrderValidator {
         if (!order.getUserEntity().getIsActive()) {
             throw new IllegalStateException("Utilisateur inactif !");
         }
-        next(order);
+        nextStep(order);
     }
 }
