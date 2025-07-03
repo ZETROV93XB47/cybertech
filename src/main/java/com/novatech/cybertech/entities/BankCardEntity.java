@@ -30,13 +30,10 @@ public class BankCardEntity extends BaseEntity {
     @Column(name = "expiryDate", nullable = false, length = 7) // Format MM/YYYY
     private String expiryDate;
 
-//    @Column(name = "cvv", nullable = false, length = 4)
-//    private String cvv; //faut pas stocker ça
-
     @Enumerated(EnumType.STRING)
     @Column(name = "cardType", nullable = false)
     private BankCardType cardType;
 
     @Column(name = "isDefault", nullable = false)
-    private boolean isDefault = false;
+    private Boolean isDefault = false;
 }

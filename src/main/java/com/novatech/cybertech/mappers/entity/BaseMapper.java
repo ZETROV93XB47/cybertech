@@ -5,17 +5,23 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.Collection;
 
-public interface BaseMapper <ENTITY, CREATE, UPDATE, RESPONSE> {
+/*
+ENTITY, CREATE, UPDATE, RESPONSE
+ */
 
-    RESPONSE mapFromEntityToResponseDto(ENTITY entity);
-    Collection<RESPONSE> mapFromEntityToResponseDto(Collection<ENTITY> entities);
+public interface BaseMapper<E, C, U, R> {
+
+    R mapFromEntityToResponseDto(E e);
+
+    Collection<R> mapFromEntityToResponseDto(Collection<E> entities);
 
     //ENTITY mapFromCreationRequestDtoToEntity(CREATE dto);
     //Collection<ENTITY> mapFromCreationRequestDtoToEntity(Collection<CREATE> dtos);
 
-    ENTITY mapFromCreationRequestToEntity(CREATE r);
-    Collection<ENTITY> mapFromCreationRequestToEntity(Collection<CREATE> rs);
+    E mapFromCreationRequestToEntity(C r);
+
+    Collection<E> mapFromCreationRequestToEntity(Collection<C> rs);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ENTITY mapFromUpdateRequestToEntity(UPDATE u);
+    E mapFromUpdateRequestToEntity(U u);
 }

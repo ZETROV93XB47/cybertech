@@ -6,5 +6,5 @@ import com.novatech.cybertech.dto.response.cart.CartResponseDto;
 
 import java.util.UUID;
 
-public interface CartService extends BaseService<UUID, CartCreateRequestDto, CartUpdateRequestDto, CartResponseDto> {
+public interface CartService extends CrudBaseService<UUID, CartCreateRequestDto, CartUpdateRequestDto, CartResponseDto> {
 }

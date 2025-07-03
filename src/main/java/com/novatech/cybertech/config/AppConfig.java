@@ -4,11 +4,12 @@ import com.novatech.cybertech.annotation.*;
 import com.novatech.cybertech.entities.enums.*;
 import com.novatech.cybertech.listener.Notification;
 import com.novatech.cybertech.listener.NotificationProcessor;
-import com.novatech.cybertech.services.core.PaymentService;
+import com.novatech.cybertech.services.core.PaymentProcessor;
 import com.novatech.cybertech.strategy.discount.DiscountStrategy;
 import com.novatech.cybertech.strategy.shipping.ShippingStrategy;
 import com.novatech.cybertech.validator.core.OrderValidator;
 import com.novatech.cybertech.validator.implementation.ActiveUserValidator;
+import com.novatech.cybertech.validator.implementation.BankCardValidityValidator;
 import com.novatech.cybertech.validator.implementation.StockValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,20 +27,22 @@ public class AppConfig {
 
     private final StockValidator stockValidator;
     private final ActiveUserValidator activeUserValidator;
+    private final BankCardValidityValidator bankCardValidityValidator;
 
     @Bean
     public OrderValidator orderValidatorChain() {
-        activeUserValidator.setNext(stockValidator);
+        activeUserValidator.setNext(bankCardValidityValidator)
+                .setNext(stockValidator);
         return activeUserValidator;
     }
 
     @Bean
-    public Map<PaymentType, PaymentService> paymentServiceMap(final ApplicationContext context) {
-        final Map<PaymentType, PaymentService> serviceMap = new EnumMap<>(PaymentType.class);
+    public Map<PaymentType, PaymentProcessor> paymentServiceMap(final ApplicationContext context) {
+        final Map<PaymentType, PaymentProcessor> serviceMap = new EnumMap<>(PaymentType.class);
 
-        final Map<String, PaymentService> beans = context.getBeansOfType(PaymentService.class);
+        final Map<String, PaymentProcessor> beans = context.getBeansOfType(PaymentProcessor.class);
 
-        for (PaymentService service : beans.values()) {
+        for (PaymentProcessor service : beans.values()) {
             final PaymentTypeHandler annotation = service.getClass().getAnnotation(PaymentTypeHandler.class);
             if (annotation != null) {
                 serviceMap.put(annotation.value(), service);

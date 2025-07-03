@@ -3,6 +3,7 @@ package com.novatech.cybertech.dto.request.order;
 import com.novatech.cybertech.dto.request.orderItem.OrderItemCreateRequestDto;
 import com.novatech.cybertech.entities.enums.OrderStatus;
 import com.novatech.cybertech.entities.enums.PaymentType;
+import com.novatech.cybertech.entities.enums.ShippingType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,12 @@ public class OrderPlacingRequestDto {
 
     @NotNull(message = "Status cannot be null")
     private OrderStatus status;
+
+    @NotNull(message = "Shipping Address cannot be null")
+    private String shippingAddress;
+
+    @NotNull(message = "Shipping Type cannot be null")
+    private ShippingType shippingType;
 
     @NotNull(message = "The payment Method Type cannot be null")
     private PaymentType paymentMethodType;

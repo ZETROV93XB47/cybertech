@@ -14,4 +14,9 @@ public class StandardShippingStrategy implements ShippingStrategy {
     public BigDecimal calculateShippingCost(OrderEntity order) {
         return BigDecimal.valueOf(5.00);
     }
+
+    @Override
+    public void shipOrder(OrderEntity order) {
+
+    }
 }

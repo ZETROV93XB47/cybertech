@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @NoRepositoryBean
-public interface BaseRepository<T extends BaseEntity, U extends Number> extends JpaRepository<T, U> {
+public interface CrudBaseRepository<T extends BaseEntity, U extends Number> extends JpaRepository<T, U> {
     Optional<T> findByUuid(final UUID uuid);
 
     List<T> findAllByUuidIn(final Collection<UUID> uuids);

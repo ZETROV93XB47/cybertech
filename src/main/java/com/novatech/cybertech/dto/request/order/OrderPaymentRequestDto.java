@@ -8,7 +8,7 @@ import lombok.Data;
 @Builder
 public class OrderPaymentRequestDto {
     private String cvv;
-    private String PaypalToken;
+    private String paypalToken;
     private PaymentType paymentType;
     private PayPalPaymentRequestDto payPalPaymentRequestDto;
 }

@@ -4,5 +4,5 @@ import com.novatech.cybertech.entities.CartItemEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CartItemRepository extends BaseRepository<CartItemEntity, Long> {
+public interface CartItemRepository extends CrudBaseRepository<CartItemEntity, Long> {
 }

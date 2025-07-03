@@ -14,4 +14,9 @@ public class ExpressShippingStrategy implements ShippingStrategy {
     public BigDecimal calculateShippingCost(OrderEntity order) {
         return BigDecimal.valueOf(15.00);
     }
+
+    @Override
+    public void shipOrder(OrderEntity order) {
+
+    }
 }

@@ -6,5 +6,5 @@ import com.novatech.cybertech.dto.response.user.UserResponseDto;
 
 import java.util.UUID;
 
-public interface UserService extends BaseService<UUID, UserCreateRequestDto, UserUpdateRequestDto, UserResponseDto> {
+public interface UserService extends CrudBaseService<UUID, UserCreateRequestDto, UserUpdateRequestDto, UserResponseDto> {
 }

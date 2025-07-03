@@ -6,4 +6,5 @@ import java.math.BigDecimal;
 
 public interface ShippingStrategy {
     BigDecimal calculateShippingCost(final OrderEntity order);
+    void shipOrder(final OrderEntity order);
 }

@@ -7,5 +7,5 @@ import com.novatech.cybertech.dto.response.review.ReviewResponseDto;
 
 import java.util.UUID;
 
-public interface ReviewService extends BaseService<UUID, ReviewCreateRequestDto, ReviewUpdateRequestDto, ReviewResponseDto> {
+public interface ReviewService extends CrudBaseService<UUID, ReviewCreateRequestDto, ReviewUpdateRequestDto, ReviewResponseDto> {
 }

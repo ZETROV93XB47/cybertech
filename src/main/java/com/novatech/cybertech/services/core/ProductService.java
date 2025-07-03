@@ -7,5 +7,5 @@ import com.novatech.cybertech.dto.response.product.ProductResponseDto;
 import java.util.UUID;
 
 //TODO: à refactorer plus tard
-public interface ProductService extends BaseService<UUID, ProductCreateRequestDto, ProductUpdateRequestDto, ProductResponseDto> {
+public interface ProductService extends CrudBaseService<UUID, ProductCreateRequestDto, ProductUpdateRequestDto, ProductResponseDto> {
 }
