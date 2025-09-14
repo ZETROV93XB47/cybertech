@@ -1,4 +1,4 @@
-package com.novatech.cybertech.entities;
+package com.novatech.cybertech.data;
 
 
 import com.novatech.cybertech.entities.enums.CommunicationType;
@@ -13,9 +13,8 @@ import lombok.*;
 public class NotificationContext {
     private final Object payload;
     private final String message;
-    private final UserEntity user;
+    private final UserDto user;
     private final NotificationType notificationType;
     private final CommunicationType communicationType;
-    private final NotificationProcessorData notificationProcessorData;
 }
 

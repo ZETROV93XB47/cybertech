@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @SuperBuilder
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "paymentTable")

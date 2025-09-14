@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @Getter
 @SuperBuilder
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true, exclude = {"orderItemEntities", "reviewEntities"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "productTable")

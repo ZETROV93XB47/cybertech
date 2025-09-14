@@ -1,6 +1,10 @@
 package com.novatech.cybertech.services.implementation;
 
 
+import com.novatech.cybertech.data.OrderEventDto;
+import com.novatech.cybertech.data.ShippingContext;
+import com.novatech.cybertech.data.UserDto;
+import com.novatech.cybertech.dispatcher.ShippingDispatcher;
 import com.novatech.cybertech.dto.request.order.OrderCreateRequestDto;
 import com.novatech.cybertech.dto.request.order.OrderPlacingRequestDto;
 import com.novatech.cybertech.dto.request.order.OrderUpdateRequestDto;
@@ -21,7 +25,6 @@ import com.novatech.cybertech.repositories.ProductRepository;
 import com.novatech.cybertech.repositories.UserRepository;
 import com.novatech.cybertech.services.core.OrderService;
 import com.novatech.cybertech.services.core.PaymentService;
-import com.novatech.cybertech.services.core.ShippingService;
 import com.novatech.cybertech.validator.core.OrderValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,10 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -48,8 +49,8 @@ public class OrderServiceImp implements OrderService {
     private final ProductRepository productRepository;
 
     private final PaymentService paymentService;
-    private final ShippingService shippingService;
     private final OrderValidator orderValidatorChain;
+    private final ShippingDispatcher shippingDispatcher;
     private final ApplicationEventPublisher eventPublisher;
 
 
@@ -121,7 +122,7 @@ public class OrderServiceImp implements OrderService {
 
         final List<ProductEntity> productEntities = getAllProducts(orderPlacingRequestDto);
 
-        BigDecimal totalPrice = processTotalPrice(productEntities);
+        BigDecimal totalPrice = processTotalPrice(orderPlacingRequestDto, productEntities);
 
         PaymentEntity paymentEntity = PaymentEntity.builder()
                 .amount(totalPrice)
@@ -133,35 +134,106 @@ public class OrderServiceImp implements OrderService {
 
         final PaymentStatus paymentStatus = paymentService.processPayment(paymentEntity);
 
-        if (paymentStatus.equals(PaymentStatus.SUCCESS)) {
 
-            paymentEntity.setPaymentStatus(paymentStatus);
+        if (paymentStatus.equals(PaymentStatus.SUCCESS)) {
+            paymentEntity.setPaymentStatus(PaymentStatus.SUCCESS);
             paymentEntity.setOrderEntity(orderEntity);//TODO: check if redundant
             orderEntity.setPaymentEntity(paymentEntity);
 
-            final OrderEntity savedOrder = orderRepository.save(orderEntity);//TODO: check if i save the order entity, it will then save the paymentEntity automatically
+            return onPaymentSuccess(orderPlacingRequestDto, paymentEntity.getPaymentStatus(), orderEntity, user, totalPrice);
+        }
 
-            eventPublisher.publishEvent(new OrderCreatedEvent(this, savedOrder));
 
-            shippingService.shipOrder(savedOrder);
-            
-            return orderMapper.mapFromEntityToResponseDto(savedOrder);
+        switch (paymentStatus) {
+            case SUCCESS -> onPaymentSuccess(orderPlacingRequestDto, paymentEntity.getPaymentStatus(), orderEntity, user, totalPrice);
+            case PENDING -> onPaymentPending(orderPlacingRequestDto, paymentEntity.getPaymentStatus(), orderEntity, user, totalPrice);
+            case FAILED -> throw new PaymentFailedException("Could not process the payment for this order, please check your balance");
         }
 
         throw new PaymentFailedException("Could not process the payment for this order, please check your balance");
         //TODO: ne pas oublier de créer un paymentEntity dans le cas d'une commande paypal et de la mettre en status pending
     }
 
+    private OrderResponseDto onPaymentSuccess(OrderPlacingRequestDto orderPlacingRequestDto, PaymentStatus paymentStatus, OrderEntity orderEntity, UserEntity user, BigDecimal totalPrice) {
+        final Map<UUID, Integer> productsByQuantityMap = orderPlacingRequestDto.getOrderItems().stream().collect(Collectors.toMap(OrderItemCreateRequestDto::getProductUuid, OrderItemCreateRequestDto::getQuantity));
+
+        final OrderEntity savedOrder = orderRepository.save(orderEntity);//TODO: check if i save the order entity, it will then save the paymentEntity automatically
+
+        OrderEventDto orderEventDto = OrderEventDto.builder()
+                .orderUuid(orderEntity.getUuid())
+                .customerEmail(user.getEmail())
+                .orderStatus(orderEntity.getStatus())
+                .customerName(user.getFirstName())
+                .paymentStatus(paymentStatus)
+                .totalAmount(totalPrice)
+                .productsByQuantityMap(productsByQuantityMap)
+                .userDto(UserDto.builder().favoriteCommunicationChanel(orderEntity.getUserEntity().getFavoriteCommunicationChanel()).email(user.getEmail()).build())
+                .build();
+
+        eventPublisher.publishEvent(new OrderCreatedEvent(this, orderEventDto));
+
+        final ShippingContext shippingContext = ShippingContext.builder()
+                .user(user)
+                .payload(savedOrder)
+                .shippingType(orderPlacingRequestDto.getShippingType())
+                .shippingProvider(orderPlacingRequestDto.getShippingProvider())
+                .build();
+
+        shippingDispatcher.dispatch(shippingContext);
+
+        return orderMapper.mapFromEntityToResponseDto(savedOrder);
+    }
+
+
+    private OrderResponseDto onPaymentPending(OrderPlacingRequestDto orderPlacingRequestDto, PaymentStatus paymentStatus, OrderEntity orderEntity, UserEntity user) {
+        //paymentEntity.setPaymentStatus(paymentStatus);
+        //paymentEntity.setOrderEntity(orderEntity);//TODO: check if redundant
+        //orderEntity.setPaymentEntity(paymentEntity);
+
+        final OrderEntity savedOrder = orderRepository.save(orderEntity);//TODO: check if i save the order entity, it will then save the paymentEntity automatically
+
+        final OrderEventDto orderEventDto = OrderEventDto.builder()
+                .build();
+
+        eventPublisher.publishEvent(new OrderCreatedEvent(this, orderEventDto));
+
+        final ShippingContext shippingContext = ShippingContext.builder()
+                .user(user)
+                .payload(savedOrder)
+                .shippingType(orderPlacingRequestDto.getShippingType())
+                .shippingProvider(orderPlacingRequestDto.getShippingProvider())
+                .build();
+
+        shippingDispatcher.dispatch(shippingContext);
+
+        return orderMapper.mapFromEntityToResponseDto(savedOrder);
+    }
+
+
     @Override
     public List<OrderResponseDto> findAllByUserUuid(final UUID userUuid) {
         return (List<OrderResponseDto>) orderMapper.mapFromEntityToResponseDto(userRepository.findByUuid(userUuid).orElseThrow(() -> new UserNotFoundException("Can't retrieve user with this uuid")).getOrderEntities());
     }
 
-    private final BigDecimal processTotalPrice(final List<ProductEntity> productEntities) {
-        return BigDecimal.valueOf(productEntities.stream().mapToInt(productEntity -> productEntity.getPrice().intValue()).sum());
+    private BigDecimal processTotalPrice(final OrderPlacingRequestDto orderPlacingRequestDto, final List<ProductEntity> productEntities) {
+
+        final Map<UUID, ProductEntity> productsByUuid = productEntities.stream().collect(Collectors.toMap(ProductEntity::getUuid, product -> product));
+
+        return orderPlacingRequestDto.getOrderItems().stream()
+                .map(orderItem -> {
+                    ProductEntity product = productsByUuid.get(orderItem.getProductUuid());
+                    if (product == null) {
+                        log.warn("Product with UUID {} from order request not found in fetched products.", orderItem.getProductUuid());
+                        return BigDecimal.ZERO;
+                    }
+
+                    return product.getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity()));
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private final List<ProductEntity> getAllProducts(final OrderPlacingRequestDto orderPlacingRequestDto) {
+
+    private List<ProductEntity> getAllProducts(final OrderPlacingRequestDto orderPlacingRequestDto) {
         return productRepository.findAllByUuidIn(orderPlacingRequestDto.getOrderItems().stream().map(OrderItemCreateRequestDto::getProductUuid).toList());
     }
 }

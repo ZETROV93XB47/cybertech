@@ -1,7 +1,7 @@
 package com.novatech.cybertech.factory;
 
 import com.novatech.cybertech.entities.enums.CommunicationType;
-import com.novatech.cybertech.listener.NotificationProcessor;
+import com.novatech.cybertech.services.core.NotificationProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

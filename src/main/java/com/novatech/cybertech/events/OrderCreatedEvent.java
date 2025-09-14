@@ -1,16 +1,16 @@
 package com.novatech.cybertech.events;
 
-import com.novatech.cybertech.entities.OrderEntity;
+import com.novatech.cybertech.data.OrderEventDto;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 @Getter
 public class OrderCreatedEvent extends ApplicationEvent {
 
-    private final OrderEntity order;
+    private final OrderEventDto orderEventDto;
 
-    public OrderCreatedEvent(Object source, OrderEntity order) {
+    public OrderCreatedEvent(Object source, OrderEventDto orderEventDto) {
         super(source);
-        this.order = order;
+        this.orderEventDto = orderEventDto;
     }
 }

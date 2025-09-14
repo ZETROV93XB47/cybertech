@@ -1,21 +1,21 @@
-package com.novatech.cybertech.listener;
+package com.novatech.cybertech.services.core;
 
-import com.novatech.cybertech.entities.NotificationContext;
+import com.novatech.cybertech.data.NotificationContext;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @AllArgsConstructor
-public abstract class Notification {
+public abstract class AbstractNotification {
 
     protected NotificationProcessor notificationProcessor;
 
-    public Notification setNotificationProcessorAndRun(final NotificationProcessor notificationProcessor) {
+    public AbstractNotification setNotificationProcessorAndRun(final NotificationProcessor notificationProcessor) {
         this.notificationProcessor = notificationProcessor;
         return this;
     }
 
-    public Notification withNotificationProcessor(final NotificationProcessor notificationProcessor) {
+    public AbstractNotification withNotificationProcessor(final NotificationProcessor notificationProcessor) {
         this.notificationProcessor = notificationProcessor;
         return this;
     }

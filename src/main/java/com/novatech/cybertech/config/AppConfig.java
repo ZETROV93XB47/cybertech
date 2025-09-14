@@ -2,11 +2,12 @@ package com.novatech.cybertech.config;
 
 import com.novatech.cybertech.annotation.*;
 import com.novatech.cybertech.entities.enums.*;
-import com.novatech.cybertech.listener.Notification;
-import com.novatech.cybertech.listener.NotificationProcessor;
+import com.novatech.cybertech.services.core.AbstractNotification;
+import com.novatech.cybertech.services.core.AbstractShippingProvider;
+import com.novatech.cybertech.services.core.NotificationProcessor;
+import com.novatech.cybertech.services.core.ShippingStrategyProcessor;
 import com.novatech.cybertech.services.core.PaymentProcessor;
 import com.novatech.cybertech.strategy.discount.DiscountStrategy;
-import com.novatech.cybertech.strategy.shipping.ShippingStrategy;
 import com.novatech.cybertech.validator.core.OrderValidator;
 import com.novatech.cybertech.validator.implementation.ActiveUserValidator;
 import com.novatech.cybertech.validator.implementation.BankCardValidityValidator;
@@ -31,8 +32,10 @@ public class AppConfig {
 
     @Bean
     public OrderValidator orderValidatorChain() {
-        activeUserValidator.setNext(bankCardValidityValidator)
+        activeUserValidator
+                .setNext(bankCardValidityValidator)
                 .setNext(stockValidator);
+
         return activeUserValidator;
     }
 
@@ -52,18 +55,18 @@ public class AppConfig {
         return serviceMap;
     }
 
-
-    @Bean
-    public Map<ShippingType, ShippingStrategy> shippingStrategyMap(ApplicationContext context) {
-        Map<ShippingType, ShippingStrategy> map = new EnumMap<>(ShippingType.class);
-        context.getBeansOfType(ShippingStrategy.class).forEach((name, bean) -> {
-            ShippingTypeHandler annotation = bean.getClass().getAnnotation(ShippingTypeHandler.class);
-            if (annotation != null) {
-                map.put(annotation.value(), bean);
-            }
-        });
-        return map;
-    }
+//
+//    @Bean
+//    public Map<ShippingType, ShippingStrategy> shippingStrategyMap(ApplicationContext context) {
+//        Map<ShippingType, ShippingStrategy> map = new EnumMap<>(ShippingType.class);
+//        context.getBeansOfType(ShippingStrategy.class).forEach((name, bean) -> {
+//            ShippingTypeHandler annotation = bean.getClass().getAnnotation(ShippingTypeHandler.class);
+//            if (annotation != null) {
+//                map.put(annotation.value(), bean);
+//            }
+//        });
+//        return map;
+//    }
 
     @Bean
     public Map<DiscountType, DiscountStrategy> discountStrategyMap(ApplicationContext context) {
@@ -78,9 +81,9 @@ public class AppConfig {
     }
 
     @Bean
-    public Map<NotificationType, Notification> getNotificationStrategies (final ApplicationContext context) {
-        Map<NotificationType, Notification> map = new EnumMap<>(NotificationType.class);
-        context.getBeansOfType(Notification.class).forEach((name, bean) -> {
+    public Map<NotificationType, AbstractNotification> getNotificationStrategies(final ApplicationContext context) {
+        Map<NotificationType, AbstractNotification> map = new EnumMap<>(NotificationType.class);
+        context.getBeansOfType(AbstractNotification.class).forEach((name, bean) -> {
             NotificationTypeHandler annotation = bean.getClass().getAnnotation(NotificationTypeHandler.class);
             if (annotation != null) {
                 map.put(annotation.value(), bean);
@@ -90,7 +93,7 @@ public class AppConfig {
     }
 
     @Bean
-    public Map<CommunicationType, NotificationProcessor> getNotificationProcessorStrategies (final ApplicationContext context) {
+    public Map<CommunicationType, NotificationProcessor> getNotificationProcessorStrategies(final ApplicationContext context) {
         Map<CommunicationType, NotificationProcessor> map = new EnumMap<>(CommunicationType.class);
         context.getBeansOfType(NotificationProcessor.class).forEach((name, bean) -> {
             CommunicationTypeHandler annotation = bean.getClass().getAnnotation(CommunicationTypeHandler.class);
@@ -101,4 +104,28 @@ public class AppConfig {
         return map;
     }
 
+    @Bean
+    public Map<ShippingType, ShippingStrategyProcessor> getShippingTypeProcessorStrategies(final ApplicationContext applicationContext) {
+        Map<ShippingType, ShippingStrategyProcessor> map = new EnumMap<>(ShippingType.class);
+        applicationContext.getBeansOfType(ShippingStrategyProcessor.class).forEach((name, bean) -> {
+            ShippingTypeHandler annotation = bean.getClass().getAnnotation(ShippingTypeHandler.class);
+            if (annotation != null) {
+                map.put(annotation.value(), bean);
+            }
+        });
+        return map;
+    }
+
+    @Bean
+    public Map<ShippingProvider, AbstractShippingProvider> getShippingProviderStrategies(final ApplicationContext applicationContext) {
+        Map<ShippingProvider, AbstractShippingProvider> map = new EnumMap<>(ShippingProvider.class);
+        applicationContext.getBeansOfType(AbstractShippingProvider.class).forEach((name, bean) -> {
+            ShippingProviderHandler annotation = bean.getClass().getAnnotation(ShippingProviderHandler.class);
+            if (annotation != null) {
+                map.put(annotation.value(), bean);
+            }
+        });
+        return map;
+    }
 }
+

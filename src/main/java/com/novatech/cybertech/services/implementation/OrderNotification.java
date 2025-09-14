@@ -1,18 +1,23 @@
-package com.novatech.cybertech.listener;
+package com.novatech.cybertech.services.implementation;
 
 import com.novatech.cybertech.annotation.NotificationTypeHandler;
-import com.novatech.cybertech.entities.NotificationContext;
-import com.novatech.cybertech.entities.NotificationProcessorData;
+import com.novatech.cybertech.data.NotificationContext;
 import com.novatech.cybertech.entities.OrderEntity;
 import com.novatech.cybertech.entities.enums.NotificationType;
+import com.novatech.cybertech.services.core.NotificationProcessor;
+import com.novatech.cybertech.services.core.AbstractNotification;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
+@Primary
+@Service
 @NotificationTypeHandler(NotificationType.ORDER_CONFIRMATION)
-public class OrderNotification extends Notification {
+public class OrderNotification extends AbstractNotification {
 
     public OrderNotification(NotificationProcessor notificationProcessor) {
         super(notificationProcessor);
@@ -29,12 +34,8 @@ public class OrderNotification extends Notification {
         model.put("orderId", savedOrder.getId());
         model.put("amount", savedOrder.getTotalAmount());
 
-        final NotificationProcessorData notificationProcessorData = NotificationProcessorData.builder()
-                .processorData(model)
-                .build();
-
         //notificationContext.withNotificationProcessorData(notificationProcessorData);
 
-        notificationProcessor.sendMessage(notificationContext.withNotificationProcessorData(notificationProcessorData));
+        notificationProcessor.sendMessage(notificationContext);
     }
 }

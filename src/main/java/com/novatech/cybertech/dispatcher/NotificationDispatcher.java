@@ -1,11 +1,11 @@
-package com.novatech.cybertech.notification;
+package com.novatech.cybertech.dispatcher;
 
-import com.novatech.cybertech.entities.NotificationContext;
+import com.novatech.cybertech.data.NotificationContext;
 import com.novatech.cybertech.exceptions.NoStrategyFoundForProcessingTheRequest;
 import com.novatech.cybertech.factory.NotificationProcessorStrategyFactory;
 import com.novatech.cybertech.factory.NotificationStrategyFactory;
-import com.novatech.cybertech.listener.Notification;
-import com.novatech.cybertech.listener.NotificationProcessor;
+import com.novatech.cybertech.services.core.AbstractNotification;
+import com.novatech.cybertech.services.core.NotificationProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class NotificationDispatcher {
     //private final Map<CommunicationType, NotificationProcessor> processorStrategies;
 
     public void dispatch(final NotificationContext context) {
-        final Notification notification = notificationStrategyFactory.getStrategy(context.getNotificationType());
+        final AbstractNotification notification = notificationStrategyFactory.getStrategy(context.getNotificationType());
         final NotificationProcessor processor = notificationProcessorStrategyFactory.getStrategy(context.getCommunicationType());
 
         if (notification == null || processor == null) {

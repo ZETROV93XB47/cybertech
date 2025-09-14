@@ -1,7 +1,6 @@
 package com.novatech.cybertech.listener;
 
-import com.novatech.cybertech.entities.OrderEntity;
-import com.novatech.cybertech.entities.OrderItemEntity;
+import com.novatech.cybertech.data.OrderEventDto;
 import com.novatech.cybertech.entities.ProductEntity;
 import com.novatech.cybertech.events.OrderCreatedEvent;
 import com.novatech.cybertech.repositories.ProductRepository;
@@ -10,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+
+import java.util.List;
 
 @Slf4j
 @Component
@@ -20,20 +21,21 @@ public class InventoryListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void updateInventory(final OrderCreatedEvent event) {
-        OrderEntity order = event.getOrder();
+        OrderEventDto order = event.getOrderEventDto();
 
-        log.info("[InventoryListener] Mise à jour des stocks pour la commande #{}", order.getId());
+        log.info("[InventoryListener] Mise à jour des stocks pour la commande #{}", order.getOrderUuid());
 
-        for (OrderItemEntity item : order.getOrderItemEntities()) {
-            ProductEntity product = item.getProductEntity();
-            int quantityOrdered = item.getQuantity();
+        final List<ProductEntity> orderProducts = productRepository.findAllByUuidIn(event.getOrderEventDto().getProductsByQuantityMap().keySet());
 
-            // On décrémente le stock du produit
-            product.setStock(product.getStock() - quantityOrdered);
+        List<ProductEntity> updatedProducts = orderProducts.stream().map(productEntity -> {
+            if (event.getOrderEventDto().getProductsByQuantityMap().get(productEntity.getUuid()) != null) {
+                productEntity.setStock(productEntity.getStock() - event.getOrderEventDto().getProductsByQuantityMap().get(productEntity.getUuid()));
 
-            log.info("Produit: {} | Stock initial: {} | Commandé: {} | Stock final: {}", product.getName(), product.getStock() + quantityOrdered, quantityOrdered, product.getStock());
+                log.info("Produit: {} | Stock initial: {} | Stock final: {}", productEntity.getName(), productEntity.getStock(), productEntity.getStock());
+            }
+            return productEntity;
+        }).toList();
 
-            productRepository.save(product);
-        }
+        productRepository.saveAll(updatedProducts);
     }
 }

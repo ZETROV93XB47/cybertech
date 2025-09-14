@@ -1,17 +1,20 @@
-package com.novatech.cybertech.listener;
+package com.novatech.cybertech.services.implementation;
 
 import com.novatech.cybertech.annotation.CommunicationTypeHandler;
-import com.novatech.cybertech.entities.NotificationContext;
+import com.novatech.cybertech.data.EmailDto;
+import com.novatech.cybertech.data.NotificationContext;
 import com.novatech.cybertech.entities.enums.CommunicationType;
 import com.novatech.cybertech.entities.enums.NotificationType;
-import com.novatech.cybertech.services.implementation.MailService;
+import com.novatech.cybertech.services.core.NotificationProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Primary
 @RequiredArgsConstructor
+@Component("emailNotificationProcessor")
 @CommunicationTypeHandler(CommunicationType.EMAIL)
 public class EmailNotificationProcessor implements NotificationProcessor {
 
@@ -19,7 +22,6 @@ public class EmailNotificationProcessor implements NotificationProcessor {
 
     @Override
     public void sendMessage(final NotificationContext notificationContext) {
-        final Map<String, Object> model = (Map<String, Object>) notificationContext.getPayload();
 
         final NotificationType notificationType = notificationContext.getNotificationType();
 
@@ -29,6 +31,13 @@ public class EmailNotificationProcessor implements NotificationProcessor {
             case PAYMENT_CONFIRMATION -> "Payment Confirmation Email";
         };
 
-        emailService.sendOrderConfirmationEmail(notificationContext.getUser().getEmail(), model, mailSubject);
+        final EmailDto emailDto = EmailDto.builder()
+                .from("abc@mail.com")
+                .to(notificationContext.getUser().getEmail())
+                .subject(mailSubject)
+                .payload(notificationContext.getPayload())
+                .build();
+
+        emailService.sendEmail(emailDto);
     }
 }

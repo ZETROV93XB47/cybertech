@@ -1,5 +1,6 @@
 package com.novatech.cybertech.services.implementation;
 
+import com.novatech.cybertech.data.EmailDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,9 @@ public class MailService {
 
     private final SpringTemplateEngine templateEngine;
 
-    public void sendOrderConfirmationEmail(final String to, final Map<String, Object> model, final String emailSubject) {
+    public void sendEmail(final EmailDto emailDto) {
         Context context = new Context();
-        context.setVariables(model);
+        context.setVariables((Map<String, Object>) emailDto.getPayload());
 
         String content = templateEngine.process("email/order-confirmation.html", context);
 
@@ -31,12 +32,10 @@ public class MailService {
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setTo(to);
-            helper.setSubject(emailSubject);
+            helper.setTo(emailDto.getTo());
+            helper.setSubject(emailDto.getSubject());
             helper.setText(content, true); // HTML content
-        }
-
-        catch (MessagingException e) {
+        } catch (MessagingException e) {
             log.error("Erreur lors de l'envoi de l'e-mail", e);
         }
 

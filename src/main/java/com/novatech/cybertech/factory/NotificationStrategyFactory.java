@@ -1,7 +1,7 @@
 package com.novatech.cybertech.factory;
 
 import com.novatech.cybertech.entities.enums.NotificationType;
-import com.novatech.cybertech.listener.Notification;
+import com.novatech.cybertech.services.core.AbstractNotification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -12,9 +12,9 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class NotificationStrategyFactory {
-    private final Map<NotificationType, Notification> notificationTypeStrategyMap;
+    private final Map<NotificationType, AbstractNotification> notificationTypeStrategyMap;
 
-    public Notification getStrategy(final NotificationType type) {
+    public AbstractNotification getStrategy(final NotificationType type) {
         return notificationTypeStrategyMap.get(type);
     }
 

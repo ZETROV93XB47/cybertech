@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ShippingServieImp implements ShippingService {
+public class ShippingServieImp /*implements ShippingService*/ {
 
     private final ShippingStrategyFactory shippingStrategyFactory;
 
-    @Override
-    public void shipOrder(OrderEntity orderEntity) {
-        shippingStrategyFactory.getStrategy(orderEntity.getShippingType()).shipOrder(orderEntity);
-    }
+//    @Override
+//    public void shipOrder(OrderEntity orderEntity) {
+//        shippingStrategyFactory.getStrategy(orderEntity.getShippingType()).shipOrder(orderEntity);
+//    }
 }
