@@ -53,7 +53,7 @@ public class UserEntity extends BaseEntity {
     @Column(name = "isActive", nullable = false)
     private Boolean isActive = true;
 
-    @Column(name = "favoriteCommunicationChanel", nullable = false)
+    @Column(name = "defaultCommunicationChanel", nullable = false)
     private CommunicationType favoriteCommunicationChanel;
 
     @Column(name = "numberOfHatefulComments", nullable = false)

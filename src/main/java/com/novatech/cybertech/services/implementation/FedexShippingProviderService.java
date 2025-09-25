@@ -1,21 +1,32 @@
 package com.novatech.cybertech.services.implementation;
 
-import com.novatech.cybertech.data.ShippingContext;
-import com.novatech.cybertech.services.core.ShippingStrategyProcessor;
-import com.novatech.cybertech.services.core.AbstractShippingProvider;
+import com.novatech.cybertech.annotation.ShippingProviderHandler;
+import com.novatech.cybertech.entities.enums.ShippingProvider;
+import com.novatech.cybertech.entities.enums.ShippingType;
+import com.novatech.cybertech.services.core.ShippingProviderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Slf4j
 @Service
-public class FedexShippingProviderService extends AbstractShippingProvider {
-
-    public FedexShippingProviderService(final ShippingStrategyProcessor shippingStrategyProcessor) {
-        super(shippingStrategyProcessor);
+@ShippingProviderHandler(ShippingProvider.FEDEX)
+public class FedexShippingProviderService implements ShippingProviderService {
+    @Override
+    public BigDecimal calculateShippingCost(ShippingType shippingType) {
+        return switch (shippingType) {
+            case EXPRESS -> BigDecimal.valueOf(25L);
+            case STANDARD -> BigDecimal.valueOf(15L);
+        };
     }
 
     @Override
-    public void ship(final ShippingContext shippingContext) {
-
+    public String deliver(String packageId, ShippingType shippingType) {
+        return switch (shippingType) {
+            case EXPRESS -> "FEDEX " + ShippingType.EXPRESS.name() + " delivery for " + packageId;
+            case STANDARD -> "FEDEX " + ShippingType.STANDARD.name() + " delivery for " + packageId;
+        };
     }
+
 }

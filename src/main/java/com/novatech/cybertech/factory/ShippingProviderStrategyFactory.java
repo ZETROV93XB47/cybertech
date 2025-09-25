@@ -1,7 +1,7 @@
 package com.novatech.cybertech.factory;
 
 import com.novatech.cybertech.entities.enums.ShippingProvider;
-import com.novatech.cybertech.services.core.AbstractShippingProvider;
+import com.novatech.cybertech.services.core.ShippingProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,9 +11,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ShippingProviderStrategyFactory {
 
-    private final Map<ShippingProvider, AbstractShippingProvider> strategyMap;
+    private final Map<ShippingProvider, ShippingProviderService> strategyMap;
 
-    public AbstractShippingProvider getStrategy(final ShippingProvider shippingProvider) {
+    public ShippingProviderService getStrategy(final ShippingProvider shippingProvider) {
         return strategyMap.get(shippingProvider);
     }
 }

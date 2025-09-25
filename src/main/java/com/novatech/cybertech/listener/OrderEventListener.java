@@ -5,7 +5,6 @@ import com.novatech.cybertech.data.UserDto;
 import com.novatech.cybertech.dispatcher.NotificationDispatcher;
 import com.novatech.cybertech.entities.enums.NotificationType;
 import com.novatech.cybertech.events.OrderCreatedEvent;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -27,7 +26,7 @@ public class OrderEventListener {
 
         final NotificationContext context = NotificationContext.builder()
                 .notificationType(NotificationType.ORDER_CONFIRMATION)
-                .communicationType(user.getFavoriteCommunicationChanel()) // ex: EMAIL
+                .communicationType(user.getDefaultCommunicationChanel())
                 .user(UserDto.builder().email(user.getEmail()).build())
                 .payload(event.getOrderEventDto())
                 .message("Votre commande #" + event.getOrderEventDto().getOrderUuid() + " a bien été confirmée.")//!WARNING Potentielle redondance de orderDto

@@ -3,12 +3,12 @@ package com.novatech.cybertech.data;
 import com.novatech.cybertech.entities.enums.CommunicationType;
 import lombok.*;
 
-@Builder
 @Setter
 @Getter
-@EqualsAndHashCode
+@Builder
 @ToString
+@EqualsAndHashCode
 public class UserDto {
-    private CommunicationType favoriteCommunicationChanel;
+    private CommunicationType defaultCommunicationChanel;
     private String email;
 }

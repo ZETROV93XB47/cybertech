@@ -17,9 +17,9 @@ import java.util.Map;
 @Primary
 @Service
 @NotificationTypeHandler(NotificationType.ORDER_CONFIRMATION)
-public class OrderNotification extends AbstractNotification {
+public class OrderConfirmationNotification extends AbstractNotification {
 
-    public OrderNotification(NotificationProcessor notificationProcessor) {
+    public OrderConfirmationNotification(NotificationProcessor notificationProcessor) {
         super(notificationProcessor);
     }
 

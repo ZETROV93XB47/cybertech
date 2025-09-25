@@ -2,10 +2,9 @@ package com.novatech.cybertech.config;
 
 import com.novatech.cybertech.annotation.*;
 import com.novatech.cybertech.entities.enums.*;
+import com.novatech.cybertech.services.core.ShippingProviderService;
 import com.novatech.cybertech.services.core.AbstractNotification;
-import com.novatech.cybertech.services.core.AbstractShippingProvider;
 import com.novatech.cybertech.services.core.NotificationProcessor;
-import com.novatech.cybertech.services.core.ShippingStrategyProcessor;
 import com.novatech.cybertech.services.core.PaymentProcessor;
 import com.novatech.cybertech.strategy.discount.DiscountStrategy;
 import com.novatech.cybertech.validator.core.OrderValidator;
@@ -55,18 +54,6 @@ public class AppConfig {
         return serviceMap;
     }
 
-//
-//    @Bean
-//    public Map<ShippingType, ShippingStrategy> shippingStrategyMap(ApplicationContext context) {
-//        Map<ShippingType, ShippingStrategy> map = new EnumMap<>(ShippingType.class);
-//        context.getBeansOfType(ShippingStrategy.class).forEach((name, bean) -> {
-//            ShippingTypeHandler annotation = bean.getClass().getAnnotation(ShippingTypeHandler.class);
-//            if (annotation != null) {
-//                map.put(annotation.value(), bean);
-//            }
-//        });
-//        return map;
-//    }
 
     @Bean
     public Map<DiscountType, DiscountStrategy> discountStrategyMap(ApplicationContext context) {
@@ -104,22 +91,11 @@ public class AppConfig {
         return map;
     }
 
-    @Bean
-    public Map<ShippingType, ShippingStrategyProcessor> getShippingTypeProcessorStrategies(final ApplicationContext applicationContext) {
-        Map<ShippingType, ShippingStrategyProcessor> map = new EnumMap<>(ShippingType.class);
-        applicationContext.getBeansOfType(ShippingStrategyProcessor.class).forEach((name, bean) -> {
-            ShippingTypeHandler annotation = bean.getClass().getAnnotation(ShippingTypeHandler.class);
-            if (annotation != null) {
-                map.put(annotation.value(), bean);
-            }
-        });
-        return map;
-    }
 
     @Bean
-    public Map<ShippingProvider, AbstractShippingProvider> getShippingProviderStrategies(final ApplicationContext applicationContext) {
-        Map<ShippingProvider, AbstractShippingProvider> map = new EnumMap<>(ShippingProvider.class);
-        applicationContext.getBeansOfType(AbstractShippingProvider.class).forEach((name, bean) -> {
+    public Map<ShippingProvider, ShippingProviderService> getShippingProviderStrategies(final ApplicationContext applicationContext) {
+        Map<ShippingProvider, ShippingProviderService> map = new EnumMap<>(ShippingProvider.class);
+        applicationContext.getBeansOfType(ShippingProviderService.class).forEach((name, bean) -> {
             ShippingProviderHandler annotation = bean.getClass().getAnnotation(ShippingProviderHandler.class);
             if (annotation != null) {
                 map.put(annotation.value(), bean);
@@ -128,4 +104,5 @@ public class AppConfig {
         return map;
     }
 }
+
 
