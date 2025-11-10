@@ -80,8 +80,8 @@ public class AppConfig {
     }
 
     @Bean
-    public Map<CommunicationType, NotificationProcessor> getNotificationProcessorStrategies(final ApplicationContext context) {
-        Map<CommunicationType, NotificationProcessor> map = new EnumMap<>(CommunicationType.class);
+    public Map<CommunicationChanel, NotificationProcessor> getNotificationProcessorStrategies(final ApplicationContext context) {
+        Map<CommunicationChanel, NotificationProcessor> map = new EnumMap<>(CommunicationChanel.class);
         context.getBeansOfType(NotificationProcessor.class).forEach((name, bean) -> {
             CommunicationTypeHandler annotation = bean.getClass().getAnnotation(CommunicationTypeHandler.class);
             if (annotation != null) {

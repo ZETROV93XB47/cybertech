@@ -1,6 +1,6 @@
 package com.novatech.cybertech.data;
 
-import com.novatech.cybertech.entities.enums.CommunicationType;
+import com.novatech.cybertech.entities.enums.CommunicationChanel;
 import lombok.*;
 
 @Setter
@@ -9,6 +9,6 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 public class UserDto {
-    private CommunicationType defaultCommunicationChanel;
+    private CommunicationChanel defaultCommunicationChanel;
     private String email;
 }

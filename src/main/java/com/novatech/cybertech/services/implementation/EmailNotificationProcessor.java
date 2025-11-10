@@ -3,7 +3,7 @@ package com.novatech.cybertech.services.implementation;
 import com.novatech.cybertech.annotation.CommunicationTypeHandler;
 import com.novatech.cybertech.data.EmailDto;
 import com.novatech.cybertech.data.NotificationContext;
-import com.novatech.cybertech.entities.enums.CommunicationType;
+import com.novatech.cybertech.entities.enums.CommunicationChanel;
 import com.novatech.cybertech.entities.enums.NotificationType;
 import com.novatech.cybertech.services.core.NotificationProcessor;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Primary
 @RequiredArgsConstructor
 @Component("emailNotificationProcessor")
-@CommunicationTypeHandler(CommunicationType.EMAIL)
+@CommunicationTypeHandler(CommunicationChanel.EMAIL)
 public class EmailNotificationProcessor implements NotificationProcessor {
 
     private final MailService emailService;

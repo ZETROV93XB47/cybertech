@@ -16,7 +16,7 @@ public class PaymentServiceImp implements PaymentService {
     private final PaymentStrategyFactory paymentStrategyFactory;
 
     @Override
-    public PaymentStatus processPayment(PaymentEntity paymentEntity) {
+    public PaymentEntity processPayment(PaymentEntity paymentEntity) {
         return paymentStrategyFactory.getServiceFromPaymentType(paymentEntity.getPaymentType()).processPayment(paymentEntity);
     }
 }

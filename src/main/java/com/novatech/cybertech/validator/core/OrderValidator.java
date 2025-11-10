@@ -1,7 +1,7 @@
 package com.novatech.cybertech.validator.core;
 
-import com.novatech.cybertech.entities.BaseEntity;
+import com.novatech.cybertech.data.OrderValidationDto;
 
 public interface OrderValidator {
-    void validate(final BaseEntity entity);
+    void validate(final OrderValidationDto entity);
 }

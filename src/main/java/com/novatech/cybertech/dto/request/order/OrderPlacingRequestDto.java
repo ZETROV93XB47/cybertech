@@ -1,7 +1,6 @@
 package com.novatech.cybertech.dto.request.order;
 
 import com.novatech.cybertech.dto.request.orderItem.OrderItemCreateRequestDto;
-import com.novatech.cybertech.entities.enums.OrderStatus;
 import com.novatech.cybertech.entities.enums.PaymentType;
 import com.novatech.cybertech.entities.enums.ShippingProvider;
 import com.novatech.cybertech.entities.enums.ShippingType;
@@ -29,7 +28,7 @@ public class OrderPlacingRequestDto {
     private ShippingProvider shippingProvider;
 
     @NotNull(message = "The payment Method Type cannot be null")
-    private PaymentType paymentMethodType;
+    private PaymentType paymentType;
 
     @NotNull(message = "Order Payment Request Dto cannot be null and must be provided for payment")
     private OrderPaymentRequestDto orderPaymentRequestDto;

@@ -1,10 +1,7 @@
 package com.novatech.cybertech.validator.implementation;
 
-import com.novatech.cybertech.entities.BankCardEntity;
-import com.novatech.cybertech.entities.BaseEntity;
-import com.novatech.cybertech.entities.OrderEntity;
+import com.novatech.cybertech.data.OrderValidationDto;
 import com.novatech.cybertech.exceptions.BankCardExpiredException;
-import com.novatech.cybertech.exceptions.NoDefaultBankCartSetException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -17,21 +14,20 @@ import static com.novatech.cybertech.utils.DateConverter.convertExpiryDateToLoca
 public class BankCardValidityValidator extends ChainableOrderValidator {
 
     @Override
-    public void validate(final BaseEntity entity) {
+    public void validate(final OrderValidationDto orderValidationDto) {
 
-        final OrderEntity order = (OrderEntity) entity;
+//        final BankCardEntity bankCardEntity = order
+//                .getUserEntity()
+//                .getBankCardEntities()
+//                .stream()
+//                .filter(b -> b.getIsDefault().equals(true))
+//                .findFirst()
+//                .orElseThrow(() -> new NoDefaultBankCartSetException("No default bank card set, please, set a default bank card and retry ..."));
 
-        final BankCardEntity bankCardEntity = order
-                .getUserEntity()
-                .getBankCardEntities()
-                .stream()
-                .filter(b -> b.getIsDefault().equals(true))
-                .findFirst()
-                .orElseThrow(() -> new NoDefaultBankCartSetException("No default bank card set, please, set a default bank card and retry ..."));
 
-        if (LocalDate.now().isAfter(convertExpiryDateToLocalDate(bankCardEntity.getExpiryDate())))
+        if (LocalDate.now().isAfter(convertExpiryDateToLocalDate(orderValidationDto.getUserDefaultBankCard().getExpiryDate())))
             throw new BankCardExpiredException("Bank card expired");
         log.info("Bank card valid");
-        nextStep(order);
+        nextStep(orderValidationDto);
     }
 }

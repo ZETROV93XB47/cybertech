@@ -1,5 +1,6 @@
 package com.novatech.cybertech.validator.implementation;
 
+import com.novatech.cybertech.data.OrderValidationDto;
 import com.novatech.cybertech.entities.OrderEntity;
 import com.novatech.cybertech.validator.core.OrderValidator;
 
@@ -11,7 +12,7 @@ public abstract class ChainableOrderValidator implements OrderValidator {
         return this;
     }
 
-    protected void nextStep(final OrderEntity order) {
-        if (next != null) next.validate(order);
+    protected void nextStep(final OrderValidationDto orderValidationDto) {
+        if (next != null) next.validate(orderValidationDto);
     }
 }

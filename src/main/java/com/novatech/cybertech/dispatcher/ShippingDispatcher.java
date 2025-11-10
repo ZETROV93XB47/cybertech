@@ -15,14 +15,14 @@ public class ShippingDispatcher {
 
     private final ShippingProviderStrategyFactory shippingProviderStrategyFactory;
 
-    public void dispatch(final ShippingContext context) {
-        final ShippingProviderService shippingProvider = shippingProviderStrategyFactory.getStrategy(context.getShippingProvider());
+    public void dispatch(final ShippingContext shippingContext) {
+        final ShippingProviderService shippingProvider = shippingProviderStrategyFactory.getStrategy(shippingContext.getShippingProvider());
 
         if (shippingProvider == null) {
-            log.error("Aucune stratégie trouvée pour ShippingType={} ou ShippingProvider={}", context.getShippingType(), context.getShippingProvider());
-            throw new NoStrategyFoundForProcessingTheRequest("Aucune stratégie trouvée pour ShippingType=" + context.getShippingType() + " ou ShippingProvider = " + context.getShippingProvider());
+            log.error("Aucune stratégie trouvée pour ShippingType={} ou ShippingProvider={}", shippingContext.getShippingType(), shippingContext.getShippingProvider());
+            throw new NoStrategyFoundForProcessingTheRequest("Aucune stratégie trouvée pour ShippingType=" + shippingContext.getShippingType() + " ou ShippingProvider = " + shippingContext.getShippingProvider());
         }
 
-        shippingProvider.deliver(context.getPackageId(), context.getShippingType());
+        shippingProvider.deliver(shippingContext.getPackageId(), shippingContext.getShippingType());
     }
 }

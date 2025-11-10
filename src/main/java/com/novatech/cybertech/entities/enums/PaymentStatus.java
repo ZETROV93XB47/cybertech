@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PaymentStatus implements EnumFunctions<Integer> {
-    PENDING(1),
-    SUCCESS(2),
-    FAILED(3);
+    //PENDING(1),
+    SUCCESS(1),
+    FAILED(2);
 
     private final Integer code;
 

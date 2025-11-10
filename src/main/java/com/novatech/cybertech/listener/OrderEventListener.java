@@ -26,7 +26,7 @@ public class OrderEventListener {
 
         final NotificationContext context = NotificationContext.builder()
                 .notificationType(NotificationType.ORDER_CONFIRMATION)
-                .communicationType(user.getDefaultCommunicationChanel())
+                .communicationChanel(user.getDefaultCommunicationChanel())
                 .user(UserDto.builder().email(user.getEmail()).build())
                 .payload(event.getOrderEventDto())
                 .message("Votre commande #" + event.getOrderEventDto().getOrderUuid() + " a bien été confirmée.")//!WARNING Potentielle redondance de orderDto

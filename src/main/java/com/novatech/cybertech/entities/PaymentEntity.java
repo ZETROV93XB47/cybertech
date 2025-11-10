@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "paymentTable")
 @ToString(callSuper = true)
+@Table(name = "paymentTable")
+@EqualsAndHashCode(callSuper = true)
 public class PaymentEntity extends BaseEntity {
 
     @Column(name = "amount", nullable = false)
@@ -27,7 +27,7 @@ public class PaymentEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "paymentType", nullable = false)
-    private PaymentType paymentType; // "CREDIT_CARD", "PAYPAL", etc.
+    private PaymentType paymentType; // "VISA", "MASTERCARD", etc.
 
     @Enumerated(EnumType.STRING)
     @Column(name = "paymentStatus", nullable = false)

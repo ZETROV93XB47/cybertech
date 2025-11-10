@@ -1,5 +1,6 @@
 package com.novatech.cybertech.validator.implementation;
 
+import com.novatech.cybertech.data.OrderValidationDto;
 import com.novatech.cybertech.entities.BaseEntity;
 import com.novatech.cybertech.entities.OrderEntity;
 import org.springframework.stereotype.Component;
@@ -8,12 +9,11 @@ import org.springframework.stereotype.Component;
 public class ActiveUserValidator extends ChainableOrderValidator {
 
     @Override
-    public void validate(final BaseEntity entity) {
-        final OrderEntity order = (OrderEntity) entity;
+    public void validate(final OrderValidationDto orderValidationDto) {
 
-        if (!order.getUserEntity().getIsActive().equals(true)) {
+        if (!orderValidationDto.isUserActive()) {
             throw new IllegalStateException("Utilisateur inactif !");
         }
-        nextStep(order);
+        nextStep(orderValidationDto);
     }
 }

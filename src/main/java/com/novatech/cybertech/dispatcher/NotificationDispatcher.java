@@ -24,11 +24,11 @@ public class NotificationDispatcher {
 
     public void dispatch(final NotificationContext context) {
         final AbstractNotification notification = notificationStrategyFactory.getStrategy(context.getNotificationType());
-        final NotificationProcessor processor = notificationProcessorStrategyFactory.getStrategy(context.getCommunicationType());
+        final NotificationProcessor processor = notificationProcessorStrategyFactory.getStrategy(context.getCommunicationChanel());
 
         if (notification == null || processor == null) {
-            log.error("Aucune stratégie trouvée pour NotificationType={} ou CommunicationType={}", context.getNotificationType(), context.getCommunicationType());
-            throw new NoStrategyFoundForProcessingTheRequest("Aucune stratégie trouvée pour NotificationType=" + context.getNotificationType() + " ou CommunicationType=" + context.getCommunicationType());
+            log.error("Aucune stratégie trouvée pour NotificationType={} ou CommunicationType={}", context.getNotificationType(), context.getCommunicationChanel());
+            throw new NoStrategyFoundForProcessingTheRequest("Aucune stratégie trouvée pour NotificationType=" + context.getNotificationType() + " ou CommunicationType=" + context.getCommunicationChanel());
         }
 
         // Injection dynamique du processor dans la notification (Bridge)

@@ -7,11 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum PaymentType implements EnumFunctions<Integer> {
 
-    PAYPAL(1),
-    CREDIT_CARD(2),
+    MASTERCARD(1),
+    VISA(2),
     APPLE_PAY(3),
-    GOOGLE_PAY(4),
-    CASH(5);
+    GOOGLE_PAY(4);
 
     private final Integer code;
 

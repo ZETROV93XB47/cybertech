@@ -37,12 +37,7 @@ public class UserCreateRequestDto {
 
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 8, message = "Password must be at least 8 characters long")
-// Tu peux ajouter une @Pattern pour la complexité du mot de passe si nécessaire
+    // Tu peux ajouter une @Pattern pour la complexité du mot de passe si nécessaire
     private String password;
-
-// Le rôle est souvent défini par défaut ou par un admin,
-// donc il n'est pas toujours inclus dans la requête de création standard.
-// Si l'utilisateur peut choisir son rôle à la création, ajoute-le ici.
-// private Role role;
 
 }

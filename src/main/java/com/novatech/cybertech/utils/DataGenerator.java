@@ -168,7 +168,7 @@ public class DataGenerator {
                 .amount(new BigDecimal(0))
                 .paymentDate(LocalDateTime.now())
                 .paymentStatus(PaymentStatus.SUCCESS)
-                .paymentType(PaymentType.CREDIT_CARD)
+                .paymentType(PaymentType.VISA)
                 .build();
     }
 

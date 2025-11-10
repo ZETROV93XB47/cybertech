@@ -1,5 +1,6 @@
 package com.novatech.cybertech.validator.implementation;
 
+import com.novatech.cybertech.data.OrderValidationDto;
 import com.novatech.cybertech.entities.BaseEntity;
 import com.novatech.cybertech.entities.OrderEntity;
 import com.novatech.cybertech.entities.OrderItemEntity;
@@ -17,16 +18,14 @@ public class StockValidator extends ChainableOrderValidator {
     private final ProductRepository productRepository;
 
     @Override
-    public void validate(final BaseEntity entity) {
-        final OrderEntity order = (OrderEntity) entity;
+    public void validate(final OrderValidationDto orderValidationDto) {
 
-        for (OrderItemEntity item : order.getOrderItemEntities()) {
-            ProductEntity product = productRepository.findById(item.getProductEntity().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Produit introuvable"));
-            if (product.getStock() < item.getQuantity()) {
+        orderValidationDto.getProductsByQuantityMap().forEach((productId, productQt) -> {
+            ProductEntity product = productRepository.findByUuid(productId).orElseThrow(() -> new IllegalArgumentException("Produit introuvable"));
+            if (product.getStock() < productQt) {
                 throw new IllegalStateException("Stock insuffisant pour le produit : " + product.getName());
             }
-        }
-        nextStep(order);
+        });
+        nextStep(orderValidationDto);
     }
 }

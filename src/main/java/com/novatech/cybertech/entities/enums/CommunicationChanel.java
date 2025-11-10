@@ -1,6 +1,6 @@
 package com.novatech.cybertech.entities.enums;
 
-public enum CommunicationType {
+public enum CommunicationChanel {
     EMAIL,
     SMS
 }

@@ -13,33 +13,27 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@PaymentTypeHandler(PaymentType.CREDIT_CARD)
-public class CreditCardPaymentProcessorStrategy implements PaymentProcessor {
+@PaymentTypeHandler(PaymentType.MASTERCARD)
+public class MastercardCardPaymentProcessor implements PaymentProcessor {
 
-    private final PaymentRepository paymentRepository;
+    //private final PaymentRepository paymentRepository;
 
     @Override
-    public PaymentStatus processPayment(PaymentEntity payment) {
+    public PaymentEntity processPayment(final PaymentEntity payment) {
+        //This part will be implemented correctly later, this code is written just to simulate a call to an external service (the user's bank)
 
-        //Call to the users's bank to process the payment
-        //This part will be implmemented correctly later, this code is written just to simulate a call to an external service (the user's bank)
+        log.info("calling user's bank to process the payment");
 
         if (payment.getAmount().intValueExact() % 2 != 0) {
-             log.info("calling user's bank to process the payment");
             log.info("Payment processed successfully");
 
             payment.setPaymentStatus(PaymentStatus.SUCCESS);
-
-            paymentRepository.save(payment);
             log.info("Processing credit card payment for amount:  {}", payment.getAmount());
-        }
-        else {
-            log.info("calling user's bank to process the payment");
+        } else {
             log.info("Payment failed");
             payment.setPaymentStatus(PaymentStatus.FAILED);
         }
 
-
-        return payment.getPaymentStatus();
+        return payment;
     }
 }
