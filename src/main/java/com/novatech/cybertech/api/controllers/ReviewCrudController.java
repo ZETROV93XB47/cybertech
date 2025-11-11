@@ -1,6 +1,6 @@
 package com.novatech.cybertech.api.controllers;
 
-import com.novatech.cybertech.api.controllers.spec.ReviewControllerApiSpec;
+import com.novatech.cybertech.api.controllers.spec.ReviewCrudControllerApiSpec;
 import com.novatech.cybertech.dto.request.review.ReviewCreateRequestDto;
 import com.novatech.cybertech.dto.request.review.ReviewUpdateRequestDto;
 import com.novatech.cybertech.dto.response.review.ReviewResponseDto;
@@ -16,16 +16,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-import static com.novatech.cybertech.constants.CyberTechAppConstants.REVIEW_CONTROLLER_BASE_PATH;
-import static com.novatech.cybertech.utils.DataGenerator.generateReviewEntity;
+import static com.novatech.cybertech.constants.CyberTechAppConstants.REVIEW_CRUD_CONTROLLER_BASE_PATH;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(REVIEW_CONTROLLER_BASE_PATH)
+@RequestMapping(REVIEW_CRUD_CONTROLLER_BASE_PATH)
 @Tag(name = "ReviewController", description = "API for Review management")
-public class ReviewController implements ReviewControllerApiSpec {
+public class ReviewCrudController implements ReviewCrudControllerApiSpec {
 
     private final ReviewServiceImp reviewService;
 

@@ -1,6 +1,6 @@
-package com.novatech.cybertech.config.jwt.service;
+package com.novatech.cybertech.services.implementation;
 
-import com.novatech.cybertech.config.jwt.CustomUserDetails;
+import com.novatech.cybertech.data.CustomUserDetails;
 import com.novatech.cybertech.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

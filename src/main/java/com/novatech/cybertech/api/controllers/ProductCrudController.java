@@ -1,6 +1,6 @@
 package com.novatech.cybertech.api.controllers;
 
-import com.novatech.cybertech.api.controllers.spec.ProductControllerApiSpec;
+import com.novatech.cybertech.api.controllers.spec.ProductCrudControllerApiSpec;
 import com.novatech.cybertech.dto.request.product.ProductCreateRequestDto;
 import com.novatech.cybertech.dto.request.product.ProductUpdateRequestDto;
 import com.novatech.cybertech.dto.response.product.ProductResponseDto;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-import static com.novatech.cybertech.constants.CyberTechAppConstants.PRODUCT_CONTROLLER_BASE_PATH;
+import static com.novatech.cybertech.constants.CyberTechAppConstants.PRODUCT_CRUD_CONTROLLER_BASE_PATH;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(PRODUCT_CONTROLLER_BASE_PATH)
+@RequestMapping(PRODUCT_CRUD_CONTROLLER_BASE_PATH)
 @Tag(name = "ProductController", description = "API for Product management")
-public class ProductController implements ProductControllerApiSpec {
+public class ProductCrudController implements ProductCrudControllerApiSpec {
 
     private final ProductServiceImp productService;
 

@@ -1,8 +1,8 @@
 package com.novatech.cybertech.api.controllers;
 
 import com.novatech.cybertech.api.controllers.spec.AuthenticationControllerApiSpec;
-import com.novatech.cybertech.config.jwt.CustomUserDetails;
-import com.novatech.cybertech.config.jwt.service.JwtService;
+import com.novatech.cybertech.data.CustomUserDetails;
+import com.novatech.cybertech.services.core.JwtService;
 import com.novatech.cybertech.dto.request.auth.UserLoginRequestDto;
 import com.novatech.cybertech.dto.request.user.UserCreateRequestDto;
 import com.novatech.cybertech.dto.response.auth.JwtResponseDto;
@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
-
 import static com.novatech.cybertech.constants.CyberTechAppConstants.AUTHENTICATION_CONTROLLER_BASE_PATH;
 
 @RestController
@@ -33,8 +30,6 @@ public class AuthenticationController implements AuthenticationControllerApiSpec
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final List<JwtService> jwtServiceList;
-    private Map<String, JwtService> jwtServiceMap;
 
     @Override
     @PostMapping("/register")

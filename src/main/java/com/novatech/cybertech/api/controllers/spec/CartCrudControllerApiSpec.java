@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public interface CartControllerApiSpec {
+public interface CartCrudControllerApiSpec {
 
     @Operation(summary = "Request a Cart by UUID",
             description = "Fetches a Cart's details based on their unique UUID.",

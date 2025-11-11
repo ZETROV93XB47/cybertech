@@ -2,7 +2,7 @@ package com.novatech.cybertech.config;
 
 
 import com.novatech.cybertech.config.jwt.filter.JwtAuthFilter;
-import com.novatech.cybertech.config.jwt.service.CustomUserDetailsService;
+import com.novatech.cybertech.services.implementation.CustomUserDetailsService;
 import com.novatech.cybertech.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

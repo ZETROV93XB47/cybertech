@@ -1,8 +1,7 @@
-package com.novatech.cybertech.config.jwt;
+package com.novatech.cybertech.data;
 
 import com.novatech.cybertech.entities.UserEntity;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +12,6 @@ import java.util.List;
 
 @Data
 @Slf4j
-@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
     private final UserEntity user;

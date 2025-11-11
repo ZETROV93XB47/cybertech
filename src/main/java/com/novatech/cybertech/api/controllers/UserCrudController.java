@@ -1,6 +1,6 @@
 package com.novatech.cybertech.api.controllers;
 
-import com.novatech.cybertech.api.controllers.spec.UserControllerApiSpec;
+import com.novatech.cybertech.api.controllers.spec.UserCrudControllerApiSpec;
 import com.novatech.cybertech.dto.request.user.UserCreateRequestDto;
 import com.novatech.cybertech.dto.request.user.UserUpdateRequestDto;
 import com.novatech.cybertech.dto.response.user.UserResponseDto;
@@ -22,16 +22,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.UUID;
 
-import static com.novatech.cybertech.constants.CyberTechAppConstants.USER_CONTROLLER_BASE_PATH;
+import static com.novatech.cybertech.constants.CyberTechAppConstants.USER_CRUD_CONTROLLER_BASE_PATH;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(USER_CONTROLLER_BASE_PATH)
+@RequestMapping(USER_CRUD_CONTROLLER_BASE_PATH)
 @Tag(name = "UserController", description = "API for user management")
-public class UserController implements UserControllerApiSpec {
+public class UserCrudController implements UserCrudControllerApiSpec {
 
     private final UserServiceImp userService;
 

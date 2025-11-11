@@ -1,6 +1,6 @@
 package com.novatech.cybertech.api.controllers;
 
-import com.novatech.cybertech.api.controllers.spec.OrderControllerApiSpec;
+import com.novatech.cybertech.api.controllers.spec.OrderCrudControllerApiSpec;
 import com.novatech.cybertech.dto.request.order.OrderCreateRequestDto;
 import com.novatech.cybertech.dto.request.order.OrderUpdateRequestDto;
 import com.novatech.cybertech.dto.response.order.OrderResponseDto;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-import static com.novatech.cybertech.constants.CyberTechAppConstants.ORDER_CONTROLLER_BASE_PATH;
+import static com.novatech.cybertech.constants.CyberTechAppConstants.ORDER_CRUD_CONTROLLER_BASE_PATH;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(ORDER_CONTROLLER_BASE_PATH)
+@RequestMapping(ORDER_CRUD_CONTROLLER_BASE_PATH)
 @Tag(name = " OrderController", description = "API for Cart management")
-public class OrderController implements OrderControllerApiSpec {
+public class OrderCrudController implements OrderCrudControllerApiSpec {
 
 
     private final OrderServiceImp orderService;
@@ -41,13 +41,13 @@ public class OrderController implements OrderControllerApiSpec {
 
     @Override
     @PatchMapping(value = "/update/{orderUuid}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderResponseDto> updateOrder(final OrderUpdateRequestDto orderUpdateRequestDto) {
+    public ResponseEntity<OrderResponseDto> updateOrder(@Valid final OrderUpdateRequestDto orderUpdateRequestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.update(orderUpdateRequestDto));
     }
 
     @Override
     @DeleteMapping(value = "/delete/{orderUuid}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteOrderByUuid(UUID orderUuid) {
+    public ResponseEntity<Void> deleteOrderByUuid(final UUID orderUuid) {
         orderService.deleteByUUID(orderUuid);
         return ResponseEntity.noContent().build();
     }

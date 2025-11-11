@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public interface ProductControllerApiSpec {
+public interface ProductCrudControllerApiSpec {
 
     @Operation(summary = "Request a Product by UUID",
             description = "Fetches a Product's details based on their unique UUID.",

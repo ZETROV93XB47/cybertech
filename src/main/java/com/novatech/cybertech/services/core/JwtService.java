@@ -1,4 +1,4 @@
-package com.novatech.cybertech.config.jwt.service;
+package com.novatech.cybertech.services.core;
 
 import org.springframework.security.core.userdetails.UserDetails;
 

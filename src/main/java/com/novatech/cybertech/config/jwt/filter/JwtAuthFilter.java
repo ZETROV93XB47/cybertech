@@ -1,7 +1,7 @@
 package com.novatech.cybertech.config.jwt.filter;
 
-import com.novatech.cybertech.config.jwt.service.CustomUserDetailsService;
-import com.novatech.cybertech.config.jwt.service.JwtServiceImp;
+import com.novatech.cybertech.services.implementation.CustomUserDetailsService;
+import com.novatech.cybertech.services.implementation.JwtServiceImp;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

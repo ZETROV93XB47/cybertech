@@ -1,5 +1,6 @@
-package com.novatech.cybertech.config.jwt.service;
+package com.novatech.cybertech.services.implementation;
 
+import com.novatech.cybertech.services.core.JwtService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;

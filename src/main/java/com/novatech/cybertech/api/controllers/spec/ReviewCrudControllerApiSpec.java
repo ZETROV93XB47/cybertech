@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-public interface ReviewControllerApiSpec {
+public interface ReviewCrudControllerApiSpec {
 
     @Operation(summary = "Request a Review by UUID",
             description = "Fetches a Review's details based on their unique UUID.",
