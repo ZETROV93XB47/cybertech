@@ -1,18 +1,15 @@
 package com.novatech.cybertech.api.controllers.spec;
 
 import com.novatech.cybertech.api.error.model.ErrorResponseDto;
-import com.novatech.cybertech.data.CustomUserDetails;
+import com.novatech.cybertech.dto.data.CustomUserDetails;
 import com.novatech.cybertech.dto.request.order.OrderCreateRequestDto;
-import com.novatech.cybertech.dto.request.order.OrderPlacingRequestDto;
 import com.novatech.cybertech.dto.request.order.OrderUpdateRequestDto;
 import com.novatech.cybertech.dto.response.order.OrderResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;

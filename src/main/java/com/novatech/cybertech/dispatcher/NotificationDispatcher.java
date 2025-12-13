@@ -1,6 +1,6 @@
 package com.novatech.cybertech.dispatcher;
 
-import com.novatech.cybertech.data.NotificationContext;
+import com.novatech.cybertech.dto.data.NotificationContext;
 import com.novatech.cybertech.exceptions.NoStrategyFoundForProcessingTheRequest;
 import com.novatech.cybertech.factory.NotificationProcessorStrategyFactory;
 import com.novatech.cybertech.factory.NotificationStrategyFactory;

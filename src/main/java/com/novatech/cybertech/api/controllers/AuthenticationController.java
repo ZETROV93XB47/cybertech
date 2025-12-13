@@ -1,7 +1,7 @@
 package com.novatech.cybertech.api.controllers;
 
 import com.novatech.cybertech.api.controllers.spec.AuthenticationControllerApiSpec;
-import com.novatech.cybertech.data.CustomUserDetails;
+import com.novatech.cybertech.dto.data.CustomUserDetails;
 import com.novatech.cybertech.services.core.JwtService;
 import com.novatech.cybertech.dto.request.auth.UserLoginRequestDto;
 import com.novatech.cybertech.dto.request.user.UserCreateRequestDto;

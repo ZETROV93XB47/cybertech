@@ -65,8 +65,11 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "photo")
     private String photo;
 
-    @Column(name = "stock")
+    @Column(name = "stock", nullable = false)
     private Integer stock;
+
+    @Column(name = "reservedStock", nullable = false)
+    private Integer reservedStock = 0;
 
     @Column(name = "description", columnDefinition = "text")
     private String description;

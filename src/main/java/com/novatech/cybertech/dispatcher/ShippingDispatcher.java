@@ -1,6 +1,6 @@
 package com.novatech.cybertech.dispatcher;
 
-import com.novatech.cybertech.data.ShippingContext;
+import com.novatech.cybertech.dto.data.ShippingContext;
 import com.novatech.cybertech.exceptions.NoStrategyFoundForProcessingTheRequest;
 import com.novatech.cybertech.factory.ShippingProviderStrategyFactory;
 import com.novatech.cybertech.services.core.ShippingProviderService;

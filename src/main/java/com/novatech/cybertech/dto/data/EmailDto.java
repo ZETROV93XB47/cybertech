@@ -1,4 +1,4 @@
-package com.novatech.cybertech.data;
+package com.novatech.cybertech.dto.data;
 
 import lombok.Builder;
 import lombok.Data;

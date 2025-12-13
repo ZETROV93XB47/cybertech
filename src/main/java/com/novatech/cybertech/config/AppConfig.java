@@ -2,10 +2,13 @@ package com.novatech.cybertech.config;
 
 import com.novatech.cybertech.annotation.*;
 import com.novatech.cybertech.entities.enums.*;
-import com.novatech.cybertech.services.core.ShippingProviderService;
+import com.novatech.cybertech.listener.RedisExpirationListener;
+import com.novatech.cybertech.repositories.ProductRepository;
+import com.novatech.cybertech.repositories.StockRepository;
 import com.novatech.cybertech.services.core.AbstractNotification;
 import com.novatech.cybertech.services.core.NotificationProcessor;
 import com.novatech.cybertech.services.core.PaymentProcessor;
+import com.novatech.cybertech.services.core.ShippingProviderService;
 import com.novatech.cybertech.strategy.discount.DiscountStrategy;
 import com.novatech.cybertech.validator.core.OrderValidator;
 import com.novatech.cybertech.validator.implementation.ActiveUserValidator;
@@ -16,6 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -102,6 +108,16 @@ public class AppConfig {
             }
         });
         return map;
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory, StockRepository reservationRepository, ProductRepository productRepository) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        // Listen to EXPIRED events
+        container.addMessageListener(new RedisExpirationListener(container, reservationRepository, productRepository), new PatternTopic("__keyevent@*__:expired"));
+
+        return container;
     }
 }
 

@@ -1,7 +1,7 @@
 package com.novatech.cybertech.api.controllers;
 
 import com.novatech.cybertech.api.controllers.spec.OrderManagementControllerApiSpec;
-import com.novatech.cybertech.data.CustomUserDetails;
+import com.novatech.cybertech.dto.data.CustomUserDetails;
 import com.novatech.cybertech.dto.request.order.OrderPlacingRequestDto;
 import com.novatech.cybertech.dto.response.order.OrderResponseDto;
 import com.novatech.cybertech.services.core.OrderService;

@@ -1,7 +1,6 @@
-package com.novatech.cybertech.data;
+package com.novatech.cybertech.dto.data;
 
 import com.novatech.cybertech.entities.BankCardEntity;
-import com.novatech.cybertech.entities.OrderItemEntity;
 import lombok.Builder;
 import lombok.Data;
 

@@ -1,7 +1,7 @@
 package com.novatech.cybertech.listener;
 
-import com.novatech.cybertech.data.NotificationContext;
-import com.novatech.cybertech.data.UserDto;
+import com.novatech.cybertech.dto.data.NotificationContext;
+import com.novatech.cybertech.dto.data.UserDto;
 import com.novatech.cybertech.dispatcher.NotificationDispatcher;
 import com.novatech.cybertech.entities.enums.NotificationType;
 import com.novatech.cybertech.events.OrderCreatedEvent;

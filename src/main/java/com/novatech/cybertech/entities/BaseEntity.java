@@ -30,7 +30,11 @@ public abstract class BaseEntity implements Serializable {
 
     @GeneratedUUID
     @JdbcTypeCode(SqlTypes.BINARY)
-    @Column(columnDefinition = "BINARY(16)", name = "uuid", length = 16, nullable = false, /*updatable = false, insertable = false,*/ unique = true)
+    @Column(columnDefinition = "BINARY(16)", name = "uuid", length = 16, nullable = false, unique = true)
     private UUID uuid;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version = 0L;
 
 }

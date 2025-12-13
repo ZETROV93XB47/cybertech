@@ -1,7 +1,7 @@
 package com.novatech.cybertech.api.controllers.spec;
 
 import com.novatech.cybertech.api.error.model.ErrorResponseDto;
-import com.novatech.cybertech.data.CustomUserDetails;
+import com.novatech.cybertech.dto.data.CustomUserDetails;
 import com.novatech.cybertech.dto.request.order.OrderPlacingRequestDto;
 import com.novatech.cybertech.dto.response.order.OrderResponseDto;
 import io.swagger.v3.oas.annotations.Operation;

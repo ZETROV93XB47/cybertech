@@ -1,6 +1,6 @@
 package com.novatech.cybertech.events;
 
-import com.novatech.cybertech.data.OrderEventDto;
+import com.novatech.cybertech.dto.data.OrderEventDto;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

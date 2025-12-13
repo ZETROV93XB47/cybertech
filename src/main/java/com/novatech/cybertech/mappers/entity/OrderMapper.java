@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper extends BaseMapper<OrderEntity, OrderCreateRequestDto, OrderUpdateRequestDto, OrderResponseDto> {
+    @Mapping(target = "uuid", expression = "java(java.util.UUID.randomUUID())")
     @Mapping(target = "orderDate", expression = "java(java.time.LocalDateTime.now())")
     OrderEntity mapFromOrderPlacingRequestDtoToOrderEntity(final OrderPlacingRequestDto orderPlacingRequestDto);
 }

@@ -39,6 +39,9 @@ services:
     container_name: ${REDIS_CONTAINER_NAME}
     ports:
       - '6379'
+    volumes:
+      - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
 
 volumes:
   mysql_data: # Définit un volume nommé pour la persistance des données

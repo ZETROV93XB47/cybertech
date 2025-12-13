@@ -1,7 +1,7 @@
 package com.novatech.cybertech.services.implementation;
 
 import com.novatech.cybertech.annotation.CommunicationTypeHandler;
-import com.novatech.cybertech.data.NotificationContext;
+import com.novatech.cybertech.dto.data.NotificationContext;
 import com.novatech.cybertech.entities.enums.CommunicationChanel;
 import com.novatech.cybertech.services.core.NotificationProcessor;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,6 @@
 package com.novatech.cybertech.validator.implementation;
 
-import com.novatech.cybertech.data.OrderValidationDto;
-import com.novatech.cybertech.entities.BaseEntity;
-import com.novatech.cybertech.entities.OrderEntity;
+import com.novatech.cybertech.dto.data.OrderValidationDto;
 import org.springframework.stereotype.Component;
 
 @Component

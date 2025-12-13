@@ -1,7 +1,7 @@
 package com.novatech.cybertech.services.implementation;
 
 import com.novatech.cybertech.annotation.NotificationTypeHandler;
-import com.novatech.cybertech.data.NotificationContext;
+import com.novatech.cybertech.dto.data.NotificationContext;
 import com.novatech.cybertech.entities.OrderEntity;
 import com.novatech.cybertech.entities.enums.NotificationType;
 import com.novatech.cybertech.services.core.NotificationProcessor;

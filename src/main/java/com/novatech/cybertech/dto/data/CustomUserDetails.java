@@ -1,4 +1,4 @@
-package com.novatech.cybertech.data;
+package com.novatech.cybertech.dto.data;
 
 import com.novatech.cybertech.entities.UserEntity;
 import lombok.Data;

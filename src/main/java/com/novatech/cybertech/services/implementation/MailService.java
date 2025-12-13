@@ -1,6 +1,6 @@
 package com.novatech.cybertech.services.implementation;
 
-import com.novatech.cybertech.data.EmailDto;
+import com.novatech.cybertech.dto.data.EmailDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

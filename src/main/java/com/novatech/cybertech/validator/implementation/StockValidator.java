@@ -1,9 +1,6 @@
 package com.novatech.cybertech.validator.implementation;
 
-import com.novatech.cybertech.data.OrderValidationDto;
-import com.novatech.cybertech.entities.BaseEntity;
-import com.novatech.cybertech.entities.OrderEntity;
-import com.novatech.cybertech.entities.OrderItemEntity;
+import com.novatech.cybertech.dto.data.OrderValidationDto;
 import com.novatech.cybertech.entities.ProductEntity;
 import com.novatech.cybertech.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.novatech.cybertech.listener;
 
-import com.novatech.cybertech.data.OrderEventDto;
+import com.novatech.cybertech.dto.data.OrderEventDto;
 import com.novatech.cybertech.entities.ProductEntity;
 import com.novatech.cybertech.events.OrderCreatedEvent;
 import com.novatech.cybertech.repositories.ProductRepository;
