@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +34,15 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
+
+    @Value("${keycloak.user.management.server.url}")
+    String serverUrl;
+    @Value("${keycloak.user.management..realm}")
+    String realm;
+    @Value("${keycloak.user.management.client.id}")
+    String clientId;
+    @Value("${keycloak.user.management.client.secret}")
+    String clientSecret;
 
     private final StockValidator stockValidator;
     private final ActiveUserValidator activeUserValidator;
@@ -126,12 +136,11 @@ public class AppConfig {
     @Bean
     public Keycloak keycloakAdminClient(KeycloakAdminClientConfig cfg) {
         return KeycloakBuilder.builder()
-                .serverUrl(cfg.getServerUrl())
-                // important: pour client_credentials, tu peux mettre le realm cible ici
-                .realm(cfg.getRealm())
+                .serverUrl(serverUrl)
+                .realm(realm)
                 .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-                .clientId(cfg.getClientId())
-                .clientSecret(cfg.getClientSecret())
+                .clientId(clientId)
+                .clientSecret(clientSecret)
                 .build();
     }
 }
