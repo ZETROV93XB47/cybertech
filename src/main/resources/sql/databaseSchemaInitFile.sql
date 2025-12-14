@@ -1,159 +1,194 @@
+use cybertechDB;
 
--- Table pour l'entité OrderEntity
-CREATE TABLE orderTable (
-    -- Colonnes de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uuid BINARY(16) NOT NULL UNIQUE,
-
-    -- Colonnes spécifiques à OrderEntity
-    orderDate DATETIME NOT NULL,
-    totalAmount DECIMAL(19, 4) NOT NULL DEFAULT 0.00,
-    shippingAddress VARCHAR(255) NOT NULL,
-    status VARCHAR(50) NOT NULL,
-
-    -- Clés étrangères
-    userId BIGINT,
-    paymentId BIGINT UNIQUE, -- La contrainte UNIQUE est cruciale pour la relation @OneToOne
-
-    -- Définition des contraintes de clé étrangère
-    CONSTRAINT fk_order_user FOREIGN KEY (userId) REFERENCES user_entity(id),
-    CONSTRAINT fk_order_payment FOREIGN KEY (paymentId) REFERENCES payment_entity(id)
-);
-
-
-
--- ========= TABLES PRINCIPALES DÉFINIES DANS LA QUESTION =========
-
--- Table pour l'entité UserEntity
 CREATE TABLE userTable (
-    -- Colonnes de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    -- Hérité de BaseEntity
+    id BIGINT NOT NULL AUTO_INCREMENT,
     uuid BINARY(16) NOT NULL UNIQUE,
+    version BIGINT NOT NULL,
 
-    -- Colonnes spécifiques à UserEntity
+    -- Champs spécifiques à UserEntity
     email VARCHAR(50) NOT NULL UNIQUE,
-    firstName VARCHAR(50) NOT NULL,
-    lastName VARCHAR(50) NOT NULL,
-    sex VARCHAR(20) NOT NULL,
+    firstName VARCHAR(50),
+    lastName VARCHAR(50),
+    sex VARCHAR(255) NOT NULL, -- EnumType.STRING
     address VARCHAR(255),
     birthDate DATE,
-    numberOfHatefulComments INT NOT NULL,
-    isActive BOOLEAN NOT NULL,
     password VARCHAR(100),
-    role VARCHAR(50) NOT NULL
+    role VARCHAR(255) NOT NULL, -- EnumType.STRING
+    phoneNumber INTEGER,
+    isActive BOOLEAN NOT NULL,
+    defaultCommunicationChanel VARCHAR(255) NOT NULL, -- EnumType.STRING (supposé)
+    numberOfHatefulComments INT NOT NULL,
+
+    PRIMARY KEY (id)
 );
 
--- Table pour l'entité ProductEntity
+
 CREATE TABLE productTable (
-    -- Colonnes de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    -- Hérité de BaseEntity
+    id BIGINT NOT NULL AUTO_INCREMENT,
     uuid BINARY(16) NOT NULL UNIQUE,
+    version BIGINT NOT NULL,
 
-    -- Colonnes spécifiques à ProductEntity
+    -- Champs spécifiques à ProductEntity
     name VARCHAR(255) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    brand VARCHAR(255) NOT NULL,
-    category VARCHAR(255) NOT NULL,
+    price DECIMAL(19, 2) NOT NULL,
+    brand VARCHAR(255) NOT NULL,        -- EnumType.STRING
+    category VARCHAR(255) NOT NULL,     -- EnumType.STRING
     cpu VARCHAR(255) NOT NULL,
-    gpu CHAR(50) NOT NULL,         -- Respecte columnDefinition = "char(50)"
-    ram CHAR(50) NOT NULL,         -- Respecte columnDefinition = "char(50)"
-    ssd CHAR(50) NOT NULL,         -- Respecte columnDefinition = "char(50)"
-    displayType VARCHAR(255),
-    displaySize VARCHAR(255),
-    os CHAR(20) NOT NULL,           -- Respecte columnDefinition = "char(20)"
+    gpu CHAR(50) NOT NULL,
+    ram CHAR(50) NOT NULL,              -- EnumType.STRING
+    ssd CHAR(50) NOT NULL,              -- EnumType.STRING
+    displayType VARCHAR(255),           -- EnumType.STRING
+    displaySize VARCHAR(255),           -- EnumType.STRING
+    os CHAR(20) NOT NULL,               -- EnumType.STRING
     connectivity VARCHAR(255),
-    photo VARCHAR(255),            -- Typiquement une URL ou un chemin de fichier
-    stock INT,
-    description TEXT,              -- Respecte columnDefinition = "text"
+    photo VARCHAR(255),
+    stock INTEGER NOT NULL,
+    reservedStock INTEGER NOT NULL,
+    description TEXT,
 
-    INDEX idx_product_brand (brand),      -- Index pour la recherche par marque
-    INDEX idx_product_category (category) -- Index pour la recherche par catégorie
+    PRIMARY KEY (id)
 );
 
--- Table pour l'entité OrderItemEntity
-CREATE TABLE orderItemTable (
-    -- Colonnes de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uuid BINARY(16) NOT NULL UNIQUE,
 
-    -- Colonnes spécifiques à OrderItemEntity
+CREATE TABLE paymentTable (
+    -- Hérité de BaseEntity
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    uuid BINARY(16) NOT NULL UNIQUE,
+    version BIGINT NOT NULL,
+
+    -- Champs spécifiques à PaymentEntity
+    amount DECIMAL(19, 2) NOT NULL,
+    paymentType VARCHAR(255) NOT NULL,    -- EnumType.STRING
+    paymentStatus VARCHAR(255) NOT NULL,  -- EnumType.STRING
+    paymentDate DATETIME NOT NULL,
+
+    -- Clé étrangère implicite pour la relation OneToOne vers OrderEntity
+    -- L'annotation 'mappedBy' sur paymentEntity dans OrderEntity indique
+    -- que la colonne de clé étrangère (paymentId) se trouve dans orderTable.
+    -- Par conséquent, cette table n'a pas besoin de colonne d'ID de commande ici.
+
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE stockTable (
+    -- Hérité de BaseEntity
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    uuid BINARY(16) NOT NULL UNIQUE,
+    version BIGINT NOT NULL,
+
+    -- Champs spécifiques à StockEntity
+    order_uuid BINARY(16) NOT NULL,
+    product_uuid BINARY(16) NOT NULL,
     quantity INT NOT NULL,
+    reservationStatus VARCHAR(255) NOT NULL, -- EnumType.STRING
+    createdAt DATETIME,
+
+    PRIMARY KEY (id),
+
+    -- Contrainte d'unicité pour assurer une seule ligne par commande/produit
+    UNIQUE KEY UQ_ORDER_PRODUCT (order_uuid, product_uuid)
+);
+
+
+CREATE TABLE bankCardTable (
+    -- Hérité de BaseEntity
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    uuid BINARY(16) NOT NULL UNIQUE,
+    version BIGINT NOT NULL,
+
+    -- Champs spécifiques à BankCardEntity
+    cardHolderName VARCHAR(100) NOT NULL,
+    cardNumber VARCHAR(19) NOT NULL,
+    expiryDate VARCHAR(7) NOT NULL, -- MM/YYYY
+    cardType VARCHAR(255) NOT NULL, -- EnumType.STRING
+    isDefault BOOLEAN NOT NULL,
+
+    -- Relation ManyToOne vers UserEntity
+    user_id BIGINT NOT NULL,
+
+    PRIMARY KEY (id),
+
+    -- Contrainte de clé étrangère
+    FOREIGN KEY (user_id) REFERENCES userTable(id)
+);
+
+
+CREATE TABLE reviewTable (
+    -- Hérité de BaseEntity
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    uuid BINARY(16) NOT NULL UNIQUE,
+    version BIGINT NOT NULL,
+
+    -- Champs spécifiques à ReviewEntity
+    rating INTEGER NOT NULL,
+    comment TEXT,
+    isHateful BOOLEAN NOT NULL,
+    createdAt DATETIME NOT NULL,
+    updatedAt DATETIME,
+
+    -- Relations ManyToOne
+    reviewId BIGINT,    -- Clé étrangère vers ProductEntity (nommé étrangement 'reviewId' dans l'entité)
+    userId BIGINT NOT NULL, -- Clé étrangère vers UserEntity
+
+    PRIMARY KEY (id),
+
+    -- Contraintes de clés étrangères
+    -- Le nom de la colonne 'reviewId' dans l'entité semble pointer vers un produit
+    FOREIGN KEY (reviewId) REFERENCES productTable(id),
+    FOREIGN KEY (userId) REFERENCES userTable(id)
+);
+
+
+CREATE TABLE orderTable (
+    -- Hérité de BaseEntity
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    uuid BINARY(16) NOT NULL UNIQUE,
+    version BIGINT NOT NULL,
+
+    -- Champs spécifiques à OrderEntity
+    orderDate DATETIME NOT NULL,
+    totalAmount DECIMAL(19, 2) NOT NULL,
+    shippingAddress VARCHAR(255) NOT NULL,
+    status VARCHAR(255) NOT NULL,       -- EnumType.STRING
+    shippingType VARCHAR(255) NOT NULL,  -- EnumType.STRING
+    discountType VARCHAR(255) NOT NULL,  -- EnumType.STRING
+
+    -- Relations ManyToOne et OneToOne
+    userId BIGINT,      -- Vers UserEntity
+    paymentId BIGINT,   -- Vers PaymentEntity
+
+    PRIMARY KEY (id),
+
+    -- Contraintes de clés étrangères (PaymentEntity est également déduit)
+    FOREIGN KEY (userId) REFERENCES userTable(id),
+    -- On suppose l'existence de la table paymentTable
+    FOREIGN KEY (paymentId) REFERENCES paymentTable(id)
+);
+
+
+
+CREATE TABLE orderItemTable (
+    -- Hérité de BaseEntity
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    uuid BINARY(16) NOT NULL UNIQUE,
+    version BIGINT NOT NULL,
+
+    -- Champs spécifiques à OrderItemEntity
+    quantity INTEGER NOT NULL,
     unitPrice DECIMAL(10, 2) NOT NULL,
     subtotal DECIMAL(10, 2) NOT NULL,
 
-    -- Clés étrangères
+    -- Relations ManyToOne
     orderId BIGINT NOT NULL,
-    productEntity BIGINT NOT NULL,
+    productEntity BIGINT NOT NULL, -- Supposé être la clé étrangère vers productTable
 
-    -- Définition des contraintes de clé étrangère
-    CONSTRAINT fk_orderitem_order_id FOREIGN KEY (orderId) REFERENCES orderTable(id),
-    CONSTRAINT fk_orderitem_product_id FOREIGN KEY (productEntity) REFERENCES productTable(id)
-);
+    PRIMARY KEY (id),
 
--- ========= TABLE POUR L'ENTITÉ PaymentEntity =========
-
-CREATE TABLE paymentTable (
-    -- Colonnes de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uuid BINARY(16) NOT NULL UNIQUE,
-
-    -- Colonnes spécifiques à PaymentEntity
-    amount DECIMAL(19, 4) NOT NULL, -- Précision standard pour les montants
-    paymentType VARCHAR(50) NOT NULL,
-    paymentStatus VARCHAR(50) NOT NULL,
-    paymentDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP -- Traduction de @CreationTimestamp
-
-    -- Note : La colonne pour la relation @OneToOne se trouve dans la table 'orderTable'
-    -- car cette entité est le côté "mappedBy" (inverse) de la relation.
-);
-
-
--- ========= TABLE POUR L'ENTITÉ BankCardEntity =========
-
-CREATE TABLE bankCardTable (
-    -- Colonnes de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uuid BINARY(16) NOT NULL UNIQUE,
-
-    -- Colonnes spécifiques à BankCardEntity
-    cardHolderName VARCHAR(100) NOT NULL,
-    cardNumber VARCHAR(19) NOT NULL,
-    expiryDate VARCHAR(7) NOT NULL, -- Format MM/YYYY
-    cvv VARCHAR(4) ,
-    cardType VARCHAR(50) NOT NULL,
-    isDefault BOOLEAN NOT NULL DEFAULT FALSE,
-
-    -- Clé étrangère vers UserEntity
-    user_id BIGINT NOT NULL,
-
-    -- Définition de la contrainte de clé étrangère
-    CONSTRAINT fk_bankcard_user FOREIGN KEY (user_id) REFERENCES userTable(id)
-);
-
-
--- ========= TABLE POUR L'ENTITÉ ReviewEntity =========
-
-CREATE TABLE reviewTable (
-    -- Colonnes de BaseEntity
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    uuid BINARY(16) NOT NULL UNIQUE,
-
-    -- Colonnes spécifiques à ReviewEntity
-    rating INT NOT NULL,
-    comment TEXT,
-    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,         -- Traduction de @CreationTimestamp
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Traduction de @UpdateTimestamp
-
-    isDefault BOOLEAN NOT NULL DEFAULT FALSE,
-
-    -- Clés étrangères
-    userId BIGINT NOT NULL,
-    reviewId BIGINT NOT NULL, -- Nom de colonne basé sur votre @JoinColumn
-
-    -- Définition des contraintes de clé étrangère
-    CONSTRAINT fk_review_user FOREIGN KEY (userId) REFERENCES userTable(id),
-    CONSTRAINT fk_review_product FOREIGN KEY (reviewId) REFERENCES productTable(id),
-
-    -- Contrainte pour valider le rating au niveau de la base de données
-    CONSTRAINT chk_rating CHECK (rating >= 1 AND rating <= 5)
+    -- Contraintes de clés étrangères
+    FOREIGN KEY (orderId) REFERENCES orderTable(id),
+    -- On suppose l'existence de la table productTable
+    FOREIGN KEY (productEntity) REFERENCES productTable(id)
 );

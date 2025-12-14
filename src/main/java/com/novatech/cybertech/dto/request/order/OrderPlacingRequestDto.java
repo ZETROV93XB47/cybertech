@@ -30,9 +30,6 @@ public class OrderPlacingRequestDto {
     @NotNull(message = "The payment Method Type cannot be null")
     private PaymentType paymentType;
 
-    @NotNull(message = "Order Payment Request Dto cannot be null and must be provided for payment")
-    private OrderPaymentRequestDto orderPaymentRequestDto;
-
     @NotNull(message = "Cannot create an order without items in the order")
     private List<OrderItemCreateRequestDto> orderItems;
 }

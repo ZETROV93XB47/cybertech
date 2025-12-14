@@ -1,6 +1,8 @@
 package com.novatech.cybertech.utils;
 
 import com.github.javafaker.Faker;
+import com.novatech.cybertech.dto.request.order.OrderPlacingRequestDto;
+import com.novatech.cybertech.dto.request.orderItem.OrderItemCreateRequestDto;
 import com.novatech.cybertech.entities.*;
 import com.novatech.cybertech.entities.enums.*;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +15,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import static com.novatech.cybertech.entities.enums.CommunicationChanel.EMAIL;
 import static com.novatech.cybertech.entities.enums.Role.ADMIN;
 import static com.novatech.cybertech.entities.enums.Role.USER;
 import static com.novatech.cybertech.entities.enums.Sex.M;
 
 @Slf4j
-//@RequiredArgsConstructor
 public class DataGenerator {
 
     private static final Faker FAKER = new Faker();
@@ -105,6 +107,7 @@ public class DataGenerator {
                     .firstName(FAKER.name().firstName())
                     .lastName(FAKER.name().lastName())
                     .sex(M)
+                    .favoriteCommunicationChanel(EMAIL)
                     .address(FAKER.address().streetAddress())
                     .birthDate(FAKER.date().birthday())
                     .password(passwordEncoder.encode("password"))
@@ -132,6 +135,7 @@ public class DataGenerator {
                         .birthDate(FAKER.date().birthday())
                         .password(passwordEncoder.encode("password"))
                         .role(ADMIN)
+                        .favoriteCommunicationChanel(EMAIL)
                         .isActive(true)
                         .numberOfHatefulComments(0)
                         .orderEntities(new ArrayList<>())
@@ -198,5 +202,21 @@ public class DataGenerator {
         return users;
 
     }
+
+    public static OrderPlacingRequestDto orderGenerator() {
+        return OrderPlacingRequestDto.builder()
+                .userUuid(UUID.fromString("6560C7C7A21D422680FC48D47C4573D9"))
+                .shippingAddress(FAKER.address().fullAddress())
+                .shippingType(ShippingType.STANDARD)
+                .shippingProvider(ShippingProvider.FEDEX)
+                .paymentType(PaymentType.VISA)
+                .orderItems(List.of())
+                .build();
+
+    }
+
+//    public static OrderItemCreateRequestDto orderItemGenerator() {
+//
+//    }
 
 }

@@ -1,50 +1,133 @@
 services:
 
-  #MYSQL
+  # ----------------------------------------------------
+  # 1. Base de Données Relationnelle : MySQL
+  # ----------------------------------------------------
   mysql:
     image: ${MYSQL_CONTAINER_VERSION}
     container_name: ${MYSQL_CONTAINER_NAME}
     restart: unless-stopped
     environment:
-      #      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      # Vos variables existantes pour la première BDD (cybertechDB)
+      # AJOUT IMPORTANT: Base de données pour Keycloak
+      # L'image MySQL vous permet d'ajouter plusieurs DBs séparées par des virgules.
+      # L'utilisateur 'rookie' sera automatiquement autorisé à y accéder.
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      #      MYSQL_USER: ${MYSQL_USER}
-      #      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ALLOW_EMPTY_PASSWORD: true
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      # NOTE: Si vous ne pouvez pas utiliser MYSQL_DATABASE pour une liste (selon la version),
+      # utilisez plutôt un script SQL d'initialisation (fichier .sql) pour créer la DB 'keycloak_db'.
+
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      # MYSQL_ALLOW_EMPTY_PASSWORD: true  <-- N'est plus nécessaire car ROOT_PASSWORD est fourni
     ports:
-      - "${MYSQL_PORT}:3306" # Mappe le port de l'hôte (défini dans .env) au port 3306 du conteneur
+      - "${MYSQL_PORT}:3306"
     volumes:
-      - mysql_data:/var/lib/mysql # Persistance des données MySQL
+      - mysql_data:/var/lib/mysql
+      # Utilisation de /docker-entrypoint-initdb.d/ pour l'initialisation du schéma
       - $PWD/../sql/databaseSchemaInitFile.sql:/docker-entrypoint-initdb.d/1_databaseSchemaInitFile.sql
+    healthcheck: # Ajout d'un healthcheck pour une meilleure gestion des dépendances
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - ecommerce-net
 
-  moderation-api:
-    build:
-      context: ../../java/com/novatech/cybertech/api/external/moderation/
-    container_name: moderation-api
-    ports:
-      - "5000:5000"
-    restart: unless-stopped
+  # ----------------------------------------------------
+  # 2. API Externe / Conteneur Python (Exemple)
+  # ----------------------------------------------------
+#  moderation-api:
+#    build:
+#      context: ../../java/com/novatech/cybertech/api/external/moderation/
+#    container_name: moderation-api
+#    ports:
+#      - "5000:5000"
+#    restart: unless-stopped
+#    networks:
+#      - ecommerce-net
 
-
+  # ----------------------------------------------------
+  # 3. Serveur de Mail de Développement : MailHog
+  # ----------------------------------------------------
   mailhog:
     image: mailhog/mailhog
     container_name: mailhog
     ports:
       - "1025:1025"   # SMTP
       - "8025:8025"   # Interface web
+    networks:
+      - ecommerce-net
 
-  #redis
+  # ----------------------------------------------------
+  # 4. Magasin de Données en Mémoire : Redis
+  # ----------------------------------------------------
   redis:
-    image: 'redis:8.2.1'
+    image: 'redis:latest' # Version stable recommandée, ou specific 
     container_name: ${REDIS_CONTAINER_NAME}
     ports:
-      - '6379'
+      - '6379:6379' # Ajout du mappage du port pour l'accès local
     volumes:
       - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
     command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      - ecommerce-net
+
+  elasticsearch:
+    image: elasticsearch:8.13.4 # Utilisez une version stable et compatible avec votre client Java
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false # Désactive la sécurité pour le dev local (plus simple)
+      # Il faut souvent augmenter la mémoire pour Elastic
+      #- ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200" # Le port HTTP de l'API
+    volumes:
+      - esdata:/usr/share/elasticsearch/data # Persistance des données Elastic
+    networks:
+      - ecommerce-net
+    restart: unless-stopped
+
+
+  # ----------------------------------------------------
+  # 5. Serveur d'Authentification : Keycloak
+  # ----------------------------------------------------
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.3 # Utiliser une version récente et stable
+    container_name: keycloak
+    environment:
+      # --- Configuration de connexion à MySQL ---
+      KC_DB: mysql # Le type de base de données
+      # Le nom du service Docker (mysql), son port (3306), et la DB dédiée (keycloak_db)
+      KC_DB_URL: jdbc:mysql://mysql:3306/keycloak_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      # Utilise les identifiants de l'utilisateur 'rookie'
+      KC_DB_USERNAME: ${MYSQL_USER}
+      KC_DB_PASSWORD: ${MYSQL_PASSWORD}
+
+      # --- Configuration de l'administrateur Keycloak ---
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      # --- Configuration du serveur ---
+      KC_HEALTH_ENABLED: true
+      KC_HOSTNAME: localhost:8080 # Le nom d'hôte pour l'accès local
+
+    ports:
+      - "8080:8080"
+    command: start-dev # Mode de démarrage développement
+    networks:
+      - ecommerce-net
+    depends_on:
+      mysql:
+        condition: service_healthy # Attend que MySQL soit prêt
+    restart: unless-stopped
+
 
 volumes:
-  mysql_data: # Définit un volume nommé pour la persistance des données
+  mysql_data:
+    driver: local
+  esdata:
     driver: local
 
 networks:

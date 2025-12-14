@@ -61,7 +61,7 @@ public class UserCrudController implements UserCrudControllerApiSpec {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/create/auto", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<UserResponseDto>> createUserAutomatically() {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createAutomatically(DataGenerator.generateUsers(100)));
