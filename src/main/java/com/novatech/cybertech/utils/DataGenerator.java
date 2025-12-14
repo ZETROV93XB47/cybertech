@@ -2,14 +2,15 @@ package com.novatech.cybertech.utils;
 
 import com.github.javafaker.Faker;
 import com.novatech.cybertech.dto.request.order.OrderPlacingRequestDto;
-import com.novatech.cybertech.dto.request.orderItem.OrderItemCreateRequestDto;
 import com.novatech.cybertech.entities.*;
 import com.novatech.cybertech.entities.enums.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -87,7 +88,7 @@ public class DataGenerator {
                 .lastName(FAKER.name().lastName())
                 .sex(M)
                 .address(FAKER.address().streetAddress())
-                .birthDate(FAKER.date().birthday())
+                .birthDate(LocalDate.ofInstant(FAKER.date().birthday().toInstant(), ZoneId.systemDefault()))
                 .password(FAKER.internet().password())
                 .role(USER)
                 .numberOfHatefulComments(0)
@@ -109,7 +110,7 @@ public class DataGenerator {
                     .sex(M)
                     .favoriteCommunicationChanel(EMAIL)
                     .address(FAKER.address().streetAddress())
-                    .birthDate(FAKER.date().birthday())
+                    .birthDate(LocalDate.ofInstant(FAKER.date().birthday().toInstant(), ZoneId.systemDefault()))
                     .password(passwordEncoder.encode("password"))
                     .role(ADMIN)
                     .isActive(true)
@@ -132,7 +133,7 @@ public class DataGenerator {
                         .lastName(FAKER.name().lastName())
                         .sex(i % 2 == 0 ? Sex.F : M)
                         .address(FAKER.address().streetAddress())
-                        .birthDate(FAKER.date().birthday())
+                        .birthDate(LocalDate.ofInstant(FAKER.date().birthday().toInstant(), ZoneId.systemDefault()))
                         .password(passwordEncoder.encode("password"))
                         .role(ADMIN)
                         .favoriteCommunicationChanel(EMAIL)
@@ -191,7 +192,7 @@ public class DataGenerator {
                             .lastName(FAKER.name().lastName())
                             .sex(i % 2 == 0 ? Sex.F : M)
                             .address(FAKER.address().streetAddress())
-                            .birthDate(FAKER.date().birthday())
+                            .birthDate(LocalDate.ofInstant(FAKER.date().birthday().toInstant(), ZoneId.systemDefault()))
                             .password(FAKER.internet().password())
                             .role(USER)
                             .orderEntities(new ArrayList<>())

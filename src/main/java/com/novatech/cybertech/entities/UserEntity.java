@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -38,17 +39,20 @@ public class UserEntity extends BaseEntity {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "birthDate")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column(name = "password", length = 100)
     private String password;
+
+    @Column(unique = true, nullable = false)
+    private String keycloakId; // sub
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
 
     @Column(name = "phoneNumber")
-    private Integer phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "isActive", nullable = false)
     private Boolean isActive = true;

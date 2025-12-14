@@ -1,5 +1,6 @@
 package com.novatech.cybertech.dto.request.user;
 
+import com.novatech.cybertech.entities.enums.CommunicationChanel;
 import com.novatech.cybertech.entities.enums.Sex;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,12 @@ public class UserCreateRequestDto {
 
     @NotNull(message = "Sex cannot be null")
     private Sex sex;
+
+    @NotBlank(message = "Phone number cannot be blank")
+    private String phoneNumber;
+
+    @NotNull(message = "Communication chanel cannot be null")
+    private CommunicationChanel favoriteCommunicationChanel;
 
     // L'adresse peut être optionnelle selon tes besoins
     private String address;

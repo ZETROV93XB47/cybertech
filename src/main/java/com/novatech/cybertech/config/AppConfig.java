@@ -16,6 +16,9 @@ import com.novatech.cybertech.validator.implementation.BankCardValidityValidator
 import com.novatech.cybertech.validator.implementation.StockValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.OAuth2Constants;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -118,6 +121,18 @@ public class AppConfig {
         container.addMessageListener(new RedisExpirationListener(container, reservationRepository, productRepository), new PatternTopic("__keyevent@*__:expired"));
 
         return container;
+    }
+
+    @Bean
+    public Keycloak keycloakAdminClient(KeycloakAdminClientConfig cfg) {
+        return KeycloakBuilder.builder()
+                .serverUrl(cfg.getServerUrl())
+                // important: pour client_credentials, tu peux mettre le realm cible ici
+                .realm(cfg.getRealm())
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+                .clientId(cfg.getClientId())
+                .clientSecret(cfg.getClientSecret())
+                .build();
     }
 }
 

@@ -16,7 +16,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-// J'ai renommé la classe pour correspondre au nom de fichier, mais vous pouvez garder l'ancien nom.
 public class ProductSearchServiceImp implements ProductSearchService {
 
     private final ElasticsearchOperations elasticsearchOperations;
