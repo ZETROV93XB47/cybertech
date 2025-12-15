@@ -1,3 +1,8 @@
+CREATE DATABASE IF NOT EXISTS cybertechDB;
+CREATE DATABASE IF NOT EXISTS keycloakDB;
+GRANT ALL PRIVILEGES ON keycloakDB.* TO 'rookie'@'%';
+FLUSH PRIVILEGES;
+
 use cybertechDB;
 
 CREATE TABLE userTable (
