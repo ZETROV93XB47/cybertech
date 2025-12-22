@@ -1,9 +1,11 @@
 package com.novatech.cybertech.dto.data;
 
 
-import com.novatech.cybertech.entities.enums.CommunicationChanel;
 import com.novatech.cybertech.entities.enums.NotificationType;
 import lombok.*;
+
+//TODO: à retirer
+@Setter
 
 @With
 @Getter
@@ -11,10 +13,9 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 public class NotificationContext {
-    private final Object payload;
-    private final String message;
+    private  Object payload;
     private final UserDto user;
+    private final String message;
     private final NotificationType notificationType;
-    private final CommunicationChanel communicationChanel;
 }
 

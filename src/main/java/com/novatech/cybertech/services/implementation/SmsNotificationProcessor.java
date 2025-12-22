@@ -15,6 +15,6 @@ import org.springframework.stereotype.Component;
 public class SmsNotificationProcessor implements NotificationProcessor {
     @Override
     public void sendMessage(NotificationContext message) {
-
+        log.info("SMS SENT");
     }
 }

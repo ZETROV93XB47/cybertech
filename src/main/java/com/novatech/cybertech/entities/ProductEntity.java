@@ -4,19 +4,23 @@ import com.novatech.cybertech.entities.enums.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Setter
 @Getter
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true, exclude = {"orderItemEntities", "reviewEntities"})
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "productTable")
 @ToString(callSuper = true)
+@Table(name = "productTable")
+@EqualsAndHashCode(callSuper = true, exclude = {"orderItemEntities", "reviewEntities"})
 public class ProductEntity extends BaseEntity {
 
     @Column(name = "name", nullable = false)
@@ -73,6 +77,10 @@ public class ProductEntity extends BaseEntity {
 
     @Column(name = "description", columnDefinition = "text")
     private String description;
+
+    @JdbcTypeCode(SqlTypes.JSON) // <--- Indique à Hibernate d'utiliser le type JSON de la BDD
+    @Column(columnDefinition = "json") // Spécifique à PostgreSQL (utiliser "json" pour MySQL)
+    private Map<String, Object> attributes = new HashMap<>();
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItemEntity> orderItemEntities;

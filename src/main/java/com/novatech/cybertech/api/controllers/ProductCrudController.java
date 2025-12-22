@@ -4,7 +4,9 @@ import com.novatech.cybertech.api.controllers.spec.ProductCrudControllerApiSpec;
 import com.novatech.cybertech.dto.request.product.ProductCreateRequestDto;
 import com.novatech.cybertech.dto.request.product.ProductUpdateRequestDto;
 import com.novatech.cybertech.dto.response.product.ProductResponseDto;
+import com.novatech.cybertech.entities.ProductEntity;
 import com.novatech.cybertech.services.implementation.ProductServiceImp;
+import com.novatech.cybertech.utils.DataGenerator;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -49,5 +51,10 @@ public class ProductCrudController implements ProductCrudControllerApiSpec {
     public ResponseEntity<Void> deleteProductByUuid(UUID productUuid) {
         productService.deleteByUUID(productUuid);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/generate", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProductEntity> generateProduct() {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.temporarySaveProductEntity(DataGenerator.generateProduct()));
     }
 }

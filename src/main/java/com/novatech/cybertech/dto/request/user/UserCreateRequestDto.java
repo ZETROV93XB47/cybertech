@@ -4,12 +4,14 @@ import com.novatech.cybertech.entities.enums.CommunicationChanel;
 import com.novatech.cybertech.entities.enums.Sex;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCreateRequestDto {
@@ -46,5 +48,8 @@ public class UserCreateRequestDto {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     // Tu peux ajouter une @Pattern pour la complexité du mot de passe si nécessaire
     private String password;
+
+    @NotNull(message = "Bank card cannot be null")
+    private BankCardCreationRequestDto bankCardCreationRequestDto;
 
 }

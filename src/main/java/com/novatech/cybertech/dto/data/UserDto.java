@@ -9,6 +9,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 public class UserDto {
-    private CommunicationChanel defaultCommunicationChanel;
+    private String name;
     private String email;
+    private CommunicationChanel defaultCommunicationChanel;
 }

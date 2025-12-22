@@ -10,6 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface OrderService extends CrudBaseService<UUID, OrderCreateRequestDto, OrderUpdateRequestDto, OrderResponseDto> {
-    OrderResponseDto placeOrder(final OrderPlacingRequestDto orderPlacingRequestDto, final UserEntity user);
+    OrderResponseDto placeOrder(final OrderPlacingRequestDto orderPlacingRequestDto, final String jwt);
     List<OrderResponseDto> findAllByUserUuid(UUID userUuid);
 }

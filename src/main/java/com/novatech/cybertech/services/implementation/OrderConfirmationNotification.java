@@ -2,10 +2,10 @@ package com.novatech.cybertech.services.implementation;
 
 import com.novatech.cybertech.annotation.NotificationTypeHandler;
 import com.novatech.cybertech.dto.data.NotificationContext;
-import com.novatech.cybertech.entities.OrderEntity;
+import com.novatech.cybertech.dto.data.OrderEventDto;
 import com.novatech.cybertech.entities.enums.NotificationType;
-import com.novatech.cybertech.services.core.NotificationProcessor;
 import com.novatech.cybertech.services.core.AbstractNotification;
+import com.novatech.cybertech.services.core.NotificationProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -26,15 +26,16 @@ public class OrderConfirmationNotification extends AbstractNotification {
     @Override
     public void sendNotification(final NotificationContext notificationContext) {
 
-        OrderEntity savedOrder = (OrderEntity) notificationContext.getPayload();
+        OrderEventDto orderEventDto = (OrderEventDto) notificationContext.getPayload();
 
         final Map<String, Object> model = new HashMap<>();
 
-        model.put("userName", savedOrder.getUserEntity().getFirstName());
-        model.put("orderId", savedOrder.getId());
-        model.put("amount", savedOrder.getTotalAmount());
+        model.put("userName", orderEventDto.getUserDto().getName());
+        model.put("orderId", orderEventDto.getOrderUuid());
+        model.put("amount", orderEventDto.getTotalAmount());
+        model.put("email", orderEventDto.getUserDto().getEmail());
 
-        //notificationContext.withNotificationProcessorData(notificationProcessorData);
+        notificationContext.setPayload(model);
 
         notificationProcessor.sendMessage(notificationContext);
     }

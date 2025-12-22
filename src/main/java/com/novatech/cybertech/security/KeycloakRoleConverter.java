@@ -18,9 +18,7 @@ public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedA
     public Collection<GrantedAuthority> convert(Jwt jwt) {
         Map<String, Object> realmAccess = jwt.getClaimAsMap("realm_access");
 
-        if (realmAccess == null || !realmAccess.containsKey("roles")) {
-            return List.of();
-        }
+        if (realmAccess == null) return List.of();
 
         @SuppressWarnings("unchecked")
         List<String> roles = (List<String>) realmAccess.getOrDefault("roles", List.of());

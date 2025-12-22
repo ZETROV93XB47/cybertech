@@ -1,8 +1,5 @@
 services:
 
-  # ----------------------------------------------------
-  # 1. Base de Données Relationnelle : MySQL
-  # ----------------------------------------------------
   mysql:
     image: ${MYSQL_CONTAINER_VERSION}
     container_name: ${MYSQL_CONTAINER_NAME}
@@ -15,16 +12,12 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      # NOTE: Si vous ne pouvez pas utiliser MYSQL_DATABASE pour une liste (selon la version),
-      # utilisez plutôt un script SQL d'initialisation (fichier .sql) pour créer la DB 'keycloak_db'.
-
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      # MYSQL_ALLOW_EMPTY_PASSWORD: true  <-- N'est plus nécessaire car ROOT_PASSWORD est fourni
+      # MYSQL_ALLOW_EMPTY_PASSWORD: true
     ports:
       - "${MYSQL_PORT}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      # Utilisation de /docker-entrypoint-initdb.d/ pour l'initialisation du schéma
       - $PWD/../sql/databaseSchemaInitFile.sql:/docker-entrypoint-initdb.d/1_databaseSchemaInitFile.sql
     healthcheck: # Ajout d'un healthcheck pour une meilleure gestion des dépendances
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
@@ -34,22 +27,16 @@ services:
     networks:
       - ecommerce-net
 
-  # ----------------------------------------------------
-  # 2. API Externe / Conteneur Python (Exemple)
-  # ----------------------------------------------------
-#  moderation-api:
-#    build:
-#      context: ../../java/com/novatech/cybertech/api/external/moderation/
-#    container_name: moderation-api
-#    ports:
-#      - "5000:5000"
-#    restart: unless-stopped
-#    networks:
-#      - ecommerce-net
+  moderation-api:
+    build:
+      context: ../../java/com/novatech/cybertech/api/external/moderation/
+    container_name: moderation-api
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    networks:
+      - ecommerce-net
 
-  # ----------------------------------------------------
-  # 3. Serveur de Mail de Développement : MailHog
-  # ----------------------------------------------------
   mailhog:
     image: mailhog/mailhog
     container_name: mailhog
@@ -58,12 +45,14 @@ services:
       - "8025:8025"   # Interface web
     networks:
       - ecommerce-net
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "1025" ]
+      interval: 5s
+      timeout: 2s
+      retries: 20
 
-  # ----------------------------------------------------
-  # 4. Magasin de Données en Mémoire : Redis
-  # ----------------------------------------------------
   redis:
-    image: 'redis:latest' # Version stable recommandée, ou specific 
+    image: 'redis:latest' # Version stable recommandée, ou specific
     container_name: ${REDIS_CONTAINER_NAME}
     ports:
       - '6379:6379' # Ajout du mappage du port pour l'accès local
@@ -97,21 +86,16 @@ services:
     image: quay.io/keycloak/keycloak:24.0.3 # Utiliser une version récente et stable
     container_name: keycloak
     environment:
-      # --- Configuration de connexion à MySQL ---
       KC_DB: mysql # Le type de base de données
-      # Le nom du service Docker (mysql), son port (3306), et la DB dédiée (keycloak_db)
-      KC_DB_URL: jdbc:mysql://mysql:3306/keycloak_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      # Utilise les identifiants de l'utilisateur 'rookie'
+      KC_DB_URL: jdbc:mysql://mysql:3306/keycloakDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       KC_DB_USERNAME: ${MYSQL_USER}
       KC_DB_PASSWORD: ${MYSQL_PASSWORD}
-
-      # --- Configuration de l'administrateur Keycloak ---
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-
-      # --- Configuration du serveur ---
       KC_HEALTH_ENABLED: true
-      KC_HOSTNAME: localhost:8080 # Le nom d'hôte pour l'accès local
+      KC_HOSTNAME: localhost:8080
+      KC_PROXY_HEADERS: xforwarded
+      KC_PROXY: edge
 
     ports:
       - "8080:8080"

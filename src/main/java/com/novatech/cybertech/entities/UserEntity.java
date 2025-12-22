@@ -45,7 +45,7 @@ public class UserEntity extends BaseEntity {
     private String password;
 
     @Column(unique = true, nullable = false)
-    private String keycloakId; // sub
+    private String keycloakId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
@@ -57,6 +57,7 @@ public class UserEntity extends BaseEntity {
     @Column(name = "isActive", nullable = false)
     private Boolean isActive = true;
 
+    //@Enumerated(EnumType.STRING)
     @Column(name = "defaultCommunicationChanel", nullable = false)
     private CommunicationChanel favoriteCommunicationChanel;
 

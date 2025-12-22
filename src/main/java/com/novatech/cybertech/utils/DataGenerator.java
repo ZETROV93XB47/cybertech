@@ -2,6 +2,9 @@ package com.novatech.cybertech.utils;
 
 import com.github.javafaker.Faker;
 import com.novatech.cybertech.dto.request.order.OrderPlacingRequestDto;
+import com.novatech.cybertech.dto.request.orderItem.OrderItemCreateRequestDto;
+import com.novatech.cybertech.dto.request.user.BankCardCreationRequestDto;
+import com.novatech.cybertech.dto.request.user.UserCreateRequestDto;
 import com.novatech.cybertech.entities.*;
 import com.novatech.cybertech.entities.enums.*;
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static com.novatech.cybertech.entities.enums.CommunicationChanel.EMAIL;
 import static com.novatech.cybertech.entities.enums.Role.ADMIN;
@@ -68,6 +68,7 @@ public class DataGenerator {
                 .ram(Ram.GO_128)
                 .category(Category.GAMING)
                 .brand(Brand.ASUS)
+                .reservedStock(Math.abs(3))
                 .connectivity("WIFI 7")
                 .displaySize(DisplaySize._15_INCHES)
                 .displayType(DisplayType.AMVA)
@@ -155,6 +156,28 @@ public class DataGenerator {
         }
     }
 
+    public static UserCreateRequestDto generateUserCreateRequestDto() {
+        String firstName = FAKER.name().firstName();
+        return UserCreateRequestDto.builder()
+                .email(FAKER.internet().emailAddress())
+                .firstName(firstName)
+                .lastName(FAKER.name().lastName())
+                .sex(M)
+                .phoneNumber(FAKER.phoneNumber().phoneNumber())
+                .address(FAKER.address().streetAddress())
+                .birthDate(LocalDate.ofInstant(FAKER.date().birthday().toInstant(), ZoneId.systemDefault()))
+                .password(FAKER.internet().password())
+                .favoriteCommunicationChanel(EMAIL)
+                .bankCardCreationRequestDto(BankCardCreationRequestDto.builder()
+                        .cardHolderName(firstName)
+                        .cardNumber(FAKER.finance().creditCard())
+                        .expiryDate("12/2029")
+                        .cardType(BankCardType.VISA)
+                        .isDefault(true)
+                        .build())
+                .build();
+    }
+
     public static OrderEntity generateOrder() {
         return OrderEntity.builder()
                 .uuid(UUID.randomUUID())
@@ -205,13 +228,14 @@ public class DataGenerator {
     }
 
     public static OrderPlacingRequestDto orderGenerator() {
+        UUID productUID = UUID.fromString("fd615b2b-85d8-43f4-8886-63e7489e5fc3");
         return OrderPlacingRequestDto.builder()
-                .userUuid(UUID.fromString("6560C7C7A21D422680FC48D47C4573D9"))
+                .userUuid(UUID.fromString("cba8b420-97fe-4cd9-b63c-69bcfb551dfa"))
                 .shippingAddress(FAKER.address().fullAddress())
                 .shippingType(ShippingType.STANDARD)
                 .shippingProvider(ShippingProvider.FEDEX)
                 .paymentType(PaymentType.VISA)
-                .orderItems(List.of())
+                .orderItems(List.of(OrderItemCreateRequestDto.builder().productUuid(productUID).quantity(1).build()))
                 .build();
 
     }

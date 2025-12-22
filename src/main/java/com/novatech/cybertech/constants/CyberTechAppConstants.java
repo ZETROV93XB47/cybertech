@@ -2,7 +2,7 @@ package com.novatech.cybertech.constants;
 
 public class CyberTechAppConstants {
 
-    public static final String AUTHENTICATION_CONTROLLER_BASE_PATH = "/auth";
+    public static final String REGISTRATION_CONTROLLER_BASE_PATH = "/register";
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 

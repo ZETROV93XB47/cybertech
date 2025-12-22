@@ -17,12 +17,16 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrderResponseDto {
 
+    //TODO: mapper correctement ce champ
     private UUID orderUuid;
+    //TODO: mapper correctement ce champ
     private UUID userUuid;
+    
     private Date orderDate;
     private OrderStatus status;
     private BigDecimal totalAmount;
     private String shippingAddress;
 
+    //TODO: mapper correctement ce champ
     private List<OrderItemResponseDto> items;
 }

@@ -1,6 +1,8 @@
 package com.novatech.cybertech.dispatcher;
 
 import com.novatech.cybertech.dto.data.NotificationContext;
+import com.novatech.cybertech.dto.data.OrderEventDto;
+import com.novatech.cybertech.dto.data.UserDto;
 import com.novatech.cybertech.exceptions.NoStrategyFoundForProcessingTheRequest;
 import com.novatech.cybertech.factory.NotificationProcessorStrategyFactory;
 import com.novatech.cybertech.factory.NotificationStrategyFactory;
@@ -23,12 +25,16 @@ public class NotificationDispatcher {
     //private final Map<CommunicationType, NotificationProcessor> processorStrategies;
 
     public void dispatch(final NotificationContext context) {
+
+        final OrderEventDto orderEventDto = (OrderEventDto) context.getPayload();
+        final UserDto user = orderEventDto.getUserDto();
+
         final AbstractNotification notification = notificationStrategyFactory.getStrategy(context.getNotificationType());
-        final NotificationProcessor processor = notificationProcessorStrategyFactory.getStrategy(context.getCommunicationChanel());
+        final NotificationProcessor processor = notificationProcessorStrategyFactory.getStrategy(user.getDefaultCommunicationChanel());
 
         if (notification == null || processor == null) {
-            log.error("Aucune stratégie trouvée pour NotificationType={} ou CommunicationType={}", context.getNotificationType(), context.getCommunicationChanel());
-            throw new NoStrategyFoundForProcessingTheRequest("Aucune stratégie trouvée pour NotificationType=" + context.getNotificationType() + " ou CommunicationType=" + context.getCommunicationChanel());
+            log.error("Aucune stratégie trouvée pour NotificationType={} ou CommunicationType={}", context.getNotificationType(), user.getDefaultCommunicationChanel());
+            throw new NoStrategyFoundForProcessingTheRequest("Aucune stratégie trouvée pour NotificationType=" + context.getNotificationType() + " ou CommunicationType=" + user.getDefaultCommunicationChanel());
         }
 
         // Injection dynamique du processor dans la notification (Bridge)

@@ -23,7 +23,7 @@ public class MailService {
 
     public void sendEmail(final EmailDto emailDto) {
         Context context = new Context();
-        context.setVariables((Map<String, Object>) emailDto.getPayload());
+        context.setVariables((Map<String, Object>) emailDto.getContext());
 
         String content = templateEngine.process("email/order-confirmation.html", context);
 

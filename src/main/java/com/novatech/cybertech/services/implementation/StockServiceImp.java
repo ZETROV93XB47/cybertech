@@ -97,6 +97,7 @@ public class StockServiceImp implements StockService {
 
         // 1️⃣ réserver en DB
         StockEntity reservation = StockEntity.builder()
+                .uuid(UUID.randomUUID())
                 .orderUuid(orderUuid)
                 .productUuid(productUuid)
                 .reservationStatus(ACTIVE)

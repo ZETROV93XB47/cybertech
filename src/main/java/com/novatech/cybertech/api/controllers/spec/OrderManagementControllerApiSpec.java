@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -38,6 +39,6 @@ public interface OrderManagementControllerApiSpec {
                     @ApiResponse(responseCode = "500",description = "Internal server error while placing the order",content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class)))
             }
     )
-    ResponseEntity<OrderResponseDto> placeOrder(final OrderPlacingRequestDto orderPlacingRequestDto, final CustomUserDetails currentUser);
+    ResponseEntity<OrderResponseDto> placeOrder(final OrderPlacingRequestDto orderPlacingRequestDto, final Jwt jwt);
 
 }

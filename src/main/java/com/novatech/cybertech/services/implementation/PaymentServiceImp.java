@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -22,6 +23,7 @@ public class PaymentServiceImp implements PaymentService {
     public PaymentEntity processPayment(final PaymentType paymentType, final BigDecimal paymentAmount) {
 
         PaymentEntity paymentEntity = PaymentEntity.builder()
+                .uuid(UUID.randomUUID())
                 .amount(paymentAmount)
                 .paymentType(paymentType)
                 .paymentStatus(null)

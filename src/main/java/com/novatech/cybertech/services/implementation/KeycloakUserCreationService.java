@@ -1,6 +1,5 @@
 package com.novatech.cybertech.services.implementation;
 
-import com.novatech.cybertech.config.KeycloakAdminClientConfig;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,25 +18,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class KeycloakUserCreationService {
 
-    private final Keycloak keycloak;
-    private final KeycloakAdminClientConfig keycloakAdminClientConfig;
+    @Value("${keycloak.client.user.management.realm}")
+    private String realm;
+    private final Keycloak keycloakClient;
+
 
     public String createUser(String email, String firstName, String lastName, String rawPassword) {
 
-        final UsersResource users = keycloak.realm(keycloakAdminClientConfig.getRealm()).users();
+        final UsersResource users = keycloakClient.realm(realm).users();
 
         UserRepresentation userRepresentation = getUserRepresentation(email, firstName, lastName, rawPassword);
 
-        final Response resp = users.create(userRepresentation);
+        final String locationHeaderValue;
+        try (Response resp = users.create(userRepresentation)) {
 
-        if (resp.getStatus() != 201) {
-            String msg = resp.readEntity(String.class);
-            throw new IllegalStateException("Keycloak user creation failed: " + resp.getStatus() + " " + msg);
+            if (resp.getStatus() != 201) {
+                String msg = resp.readEntity(String.class);
+                throw new IllegalStateException("Keycloak user creation failed: " + resp.getStatus() + " " + msg);
+            }
+
+            // L’ID est dans le Location header: .../users/{id}
+            locationHeaderValue = resp.getLocation().toString();
         }
+        return getUserKeycloakId(locationHeaderValue);
+    }
 
-        // L’ID est dans le Location header: .../users/{id}
-        String location = resp.getLocation().toString();
-        return location.substring(location.lastIndexOf('/') + 1);
+    private static String getUserKeycloakId(String locationHeaderValue) {
+        return locationHeaderValue.substring(locationHeaderValue.lastIndexOf('/') + 1);
     }
 
     private UserRepresentation getUserRepresentation(String email, String firstName, String lastName, String rawPassword) {
@@ -57,7 +65,7 @@ public class KeycloakUserCreationService {
     }
 
     public void deleteUser(String keycloakUserId) {
-        keycloak.realm(keycloakAdminClientConfig.getRealm()).users().delete(keycloakUserId);
+        keycloakClient.realm(realm).users().delete(keycloakUserId);
     }
 
     private String createUserNameFromFirstNameAndLastName(final String firstName, final String lastName, final String email) {

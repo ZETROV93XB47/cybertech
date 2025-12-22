@@ -19,14 +19,8 @@ public class OrderEventDto implements Serializable {
 
     private UUID orderUuid;
     private UserDto userDto;
-    private String customerName;
-    private String customerEmail;
     private BigDecimal totalAmount;
     private OrderStatus orderStatus;
     private PaymentStatus paymentStatus;
     private Map<UUID, Integer> productsByQuantityMap;
 }
-
-//private OrderDto orderDto;//
-//private List<OrderItemDto> orderItemDtoList;//
-//TODO: getOrderItemEntities

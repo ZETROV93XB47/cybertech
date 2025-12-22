@@ -31,7 +31,10 @@ public class SecurityConfig {
             "/v3/api-docs/**",      // Accès à la définition OpenAPI (si utilisé)
             "/api/v1/services/**",
             "/public/**",
-            "/users/register"
+            "/users/register",
+            "/api/v1/register",
+            "/api/v1/register/**",
+            "/api/v1/services/product/generate"
     };
 
     @Bean
@@ -49,7 +52,7 @@ public class SecurityConfig {
 
     @Bean
     public Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthConverter() {
-        var converter = new JwtAuthenticationConverter();
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
         return converter;
     }

@@ -35,14 +35,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AppConfig {
 
-    @Value("${keycloak.user.management.server.url}")
-    String serverUrl;
-    @Value("${keycloak.user.management..realm}")
-    String realm;
-    @Value("${keycloak.user.management.client.id}")
-    String clientId;
-    @Value("${keycloak.user.management.client.secret}")
-    String clientSecret;
+    @Value("${keycloak.client.user.management.server.url}")
+    private String serverUrl;
+    @Value("${keycloak.client.user.management.realm}")
+    private String realm;
+    @Value("${keycloak.client.user.management.client.id}")
+    private String clientId;
+    @Value("${keycloak.client.user.management.client.secret}")
+    private String clientSecret;
 
     private final StockValidator stockValidator;
     private final ActiveUserValidator activeUserValidator;
@@ -134,13 +134,13 @@ public class AppConfig {
     }
 
     @Bean
-    public Keycloak keycloakAdminClient(KeycloakAdminClientConfig cfg) {
+    public Keycloak keycloakAdminClient() {
         return KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
                 .realm(realm)
-                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .clientId(clientId)
                 .clientSecret(clientSecret)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .build();
     }
 }

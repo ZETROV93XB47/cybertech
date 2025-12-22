@@ -15,11 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-import static com.novatech.cybertech.constants.CyberTechAppConstants.AUTHENTICATION_CONTROLLER_BASE_PATH;
+import static com.novatech.cybertech.constants.CyberTechAppConstants.API_BASE_PATH;
+import static com.novatech.cybertech.utils.DataGenerator.generateUserCreateRequestDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(AUTHENTICATION_CONTROLLER_BASE_PATH)
+@RequestMapping(API_BASE_PATH)
 public class RegistrationController implements RegistrationControllerApiSpec {
 
     private final RegistrationService registrationService;
@@ -33,5 +34,17 @@ public class RegistrationController implements RegistrationControllerApiSpec {
                 "id", created.getId(),
                 "keycloakId", created.getKeycloakId()
         ));
+    }
+
+    @PostMapping("/register/auto")
+    public ResponseEntity<UserEntity> registerAuto() {
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(registrationService.register(generateUserCreateRequestDto()));
+        //        final UserEntity created = registrationService.register(generateUserCreateRequestDto());
+
+//        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+//                "id", created.getId(),
+//                "keycloakId", created.getKeycloakId()
+//        ));
     }
 }

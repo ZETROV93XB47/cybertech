@@ -72,4 +72,9 @@ public class ProductServiceImp implements ProductService {
     public void deleteByUUIDs(Collection<UUID> uuids) {
         productRepository.deleteAllByUuidIn(uuids);
     }
+
+    @Transactional
+    public ProductEntity temporarySaveProductEntity(ProductEntity productEntity) {
+        return productRepository.save(productEntity);
+    }
 }
