@@ -27,6 +27,6 @@ public class OrderSummaryDto {
     private Integer totalltems; //Nombre total d'articles dans la commande (somme des quantités)
 
 // Remarque : On exclut volontairement la liste détaillée des OrderltemDto ici.
-// Les détails complets seraient disponibles via un endpoint dédié comme /api/v1/orders/[orderUuid)
+// Les détails complets seraient disponibles via un endpoint dédié comme /api/v1/orders/[uuid)
 
 }

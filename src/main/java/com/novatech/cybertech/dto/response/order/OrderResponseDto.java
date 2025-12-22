@@ -18,7 +18,7 @@ import java.util.UUID;
 public class OrderResponseDto {
 
     //TODO: mapper correctement ce champ
-    private UUID orderUuid;
+    private UUID uuid;
     //TODO: mapper correctement ce champ
     private UUID userUuid;
     
@@ -28,5 +28,5 @@ public class OrderResponseDto {
     private String shippingAddress;
 
     //TODO: mapper correctement ce champ
-    private List<OrderItemResponseDto> items;
+    private List<OrderItemResponseDto> orderItems;
 }

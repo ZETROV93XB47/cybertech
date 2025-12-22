@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 @Slf4j
 @Primary
 @RequiredArgsConstructor
@@ -32,7 +30,7 @@ public class EmailNotificationProcessor implements NotificationProcessor {
                 .from("abc@mail.com")
                 .to(notificationContext.getUser().getEmail())
                 .subject(notificationContext.getMessage())
-                .context((Map<String, Object>)notificationContext.getPayload())
+                .context(notificationContext.getData())
                 .build();
 
         emailService.sendEmail(emailDto);

@@ -207,8 +207,6 @@ public class OrderServiceImp implements OrderService {
 
     private void sendOrderCreationEvent(OrderEntity orderEntity, UserEntity user, BigDecimal totalPrice, Map<UUID, Integer> productsByQuantityMap) {
 
-        log.info("DEFAULT CM : {}", user.getFavoriteCommunicationChanel());
-
         OrderEventDto orderEventDto = OrderEventDto.builder()
                 .orderUuid(orderEntity.getUuid())
                 .orderStatus(orderEntity.getStatus())
@@ -219,6 +217,7 @@ public class OrderServiceImp implements OrderService {
                         .defaultCommunicationChanel(user.getFavoriteCommunicationChanel())
                         .email(user.getEmail())
                         .name(user.getFirstName())
+                        .phoneNumber(user.getPhoneNumber())
                         .build())
                 .build();
 

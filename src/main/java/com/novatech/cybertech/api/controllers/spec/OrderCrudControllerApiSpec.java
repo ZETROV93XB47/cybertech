@@ -21,7 +21,7 @@ public interface OrderCrudControllerApiSpec {
     @Operation(summary = "Request a Order by UUID",
             description = "Fetches a Order's details based on their unique UUID.",
             parameters = {
-                    @Parameter(name = "orderUuid", description = "UUID for searching a Order", required = true, schema = @Schema(implementation = UUID.class))
+                    @Parameter(name = "uuid", description = "UUID for searching a Order", required = true, schema = @Schema(implementation = UUID.class))
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Order found successfully", content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = OrderResponseDto.class))),
@@ -72,7 +72,7 @@ public interface OrderCrudControllerApiSpec {
     @Operation(summary = "Delete a Order by UUID",
             description = "Deletes a order based on their unique UUID.",
             parameters = {
-                    @Parameter(name = "orderUuid", description = "The UUID of the order to delete", required = true, schema = @Schema(implementation = UUID.class))
+                    @Parameter(name = "uuid", description = "The UUID of the order to delete", required = true, schema = @Schema(implementation = UUID.class))
             },
             responses = {
                     @ApiResponse(responseCode = "204", description = "Order deleted successfully (No Content)"),

@@ -28,8 +28,8 @@ public class OrderCrudController implements OrderCrudControllerApiSpec {
     private final OrderServiceImp orderService;
 
     @Override
-    @GetMapping(value = "/get/{orderUuid}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderResponseDto> getOrderByUuid(@PathVariable("orderUuid") UUID orderUuid) {
+    @GetMapping(value = "/get/{uuid}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<OrderResponseDto> getOrderByUuid(@PathVariable("uuid") UUID orderUuid) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getByUUID(orderUuid));
     }
 
@@ -40,13 +40,13 @@ public class OrderCrudController implements OrderCrudControllerApiSpec {
     }
 
     @Override
-    @PatchMapping(value = "/update/{orderUuid}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/update/{uuid}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderResponseDto> updateOrder(@Valid final OrderUpdateRequestDto orderUpdateRequestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.update(orderUpdateRequestDto));
     }
 
     @Override
-    @DeleteMapping(value = "/delete/{orderUuid}", produces = APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/{uuid}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteOrderByUuid(final UUID orderUuid) {
         orderService.deleteByUUID(orderUuid);
         return ResponseEntity.noContent().build();

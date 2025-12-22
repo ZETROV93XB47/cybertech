@@ -158,10 +158,12 @@ public class DataGenerator {
 
     public static UserCreateRequestDto generateUserCreateRequestDto() {
         String firstName = FAKER.name().firstName();
+        String lastName = FAKER.name().lastName();
+
         return UserCreateRequestDto.builder()
-                .email(FAKER.internet().emailAddress())
+                .email(firstName + "." + lastName + "@gmail.com")
                 .firstName(firstName)
-                .lastName(FAKER.name().lastName())
+                .lastName(lastName)
                 .sex(M)
                 .phoneNumber(FAKER.phoneNumber().phoneNumber())
                 .address(FAKER.address().streetAddress())
@@ -169,7 +171,7 @@ public class DataGenerator {
                 .password(FAKER.internet().password())
                 .favoriteCommunicationChanel(EMAIL)
                 .bankCardCreationRequestDto(BankCardCreationRequestDto.builder()
-                        .cardHolderName(firstName)
+                        .cardHolderName(firstName + " " + lastName)
                         .cardNumber(FAKER.finance().creditCard())
                         .expiryDate("12/2029")
                         .cardType(BankCardType.VISA)

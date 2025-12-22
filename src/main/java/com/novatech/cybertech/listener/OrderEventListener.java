@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -25,10 +28,8 @@ public class OrderEventListener {
 
         final NotificationContext context = NotificationContext.builder()
                 .notificationType(NotificationType.ORDER_CONFIRMATION)
-                .user(UserDto.builder()
-                        .email(event.getOrderEventDto().getUserDto().getEmail())
-                        .name(event.getOrderEventDto().getUserDto().getName())
-                        .build())
+                .user(event.getOrderEventDto().getUserDto())
+                //.data((Map<String, Object>) new HashMap<>().put("OrderEventDto", event.getOrderEventDto()))
                 .payload(event.getOrderEventDto())//TODO: Clean this redundant part later
                 .message("Votre commande #" + event.getOrderEventDto().getOrderUuid() + " a bien été confirmée.")//!WARNING Potentielle redondance de orderDto
                 .build();

@@ -26,8 +26,7 @@ public class NotificationDispatcher {
 
     public void dispatch(final NotificationContext context) {
 
-        final OrderEventDto orderEventDto = (OrderEventDto) context.getPayload();
-        final UserDto user = orderEventDto.getUserDto();
+        final UserDto user = context.getUser();
 
         final AbstractNotification notification = notificationStrategyFactory.getStrategy(context.getNotificationType());
         final NotificationProcessor processor = notificationProcessorStrategyFactory.getStrategy(user.getDefaultCommunicationChanel());
