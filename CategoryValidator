@@ -1,0 +1,12 @@
+// Attributs pour les PC
+public record ComputerAttributes(
+    @NotBlank String cpu,
+    @NotBlank String gpu,
+    @Min(8) Integer ramGb
+) {}
+
+// Attributs pour les Écrans
+public record MonitorAttributes(
+    @NotBlank String resolution,
+    @Min(60) Integer refreshRate
+) {}
