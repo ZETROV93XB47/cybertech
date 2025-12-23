@@ -1,0 +1,37 @@
+@Service
+@RequiredArgsConstructor
+public class ProductService {
+
+    private final ProductRepository productRepository;
+    private final ObjectMapper objectMapper; // Injecté par Spring
+    private final Validator validator;      // Jakarta Bean Validation
+
+    public ProductEntity createProduct(ProductRequest request) {
+        // 1. Validation métier : les attributs correspondent-ils à la catégorie ?
+        validateAttributes(request.getCategory(), request.getAttributes());
+
+        // 2. Création de l'entité
+        ProductEntity entity = ProductEntity.builder()
+            .name(request.getName())
+            .category(request.getCategory())
+            .attributes(request.getAttributes()) // On stocke la Map brute en JSONB
+            .price(request.getPrice())
+            .build();
+
+        return productRepository.save(entity);
+    }
+
+    private void validateAttributes(String category, Map<String, Object> attributes) {
+        Object attributeDto = switch (category.toUpperCase()) {
+            case "COMPUTER" -> objectMapper.convertValue(attributes, ComputerAttributes.class);
+            case "MONITOR" -> objectMapper.convertValue(attributes, MonitorAttributes.class);
+            default -> throw new IllegalArgumentException("Catégorie inconnue");
+        };
+
+        // Déclenche la validation Bean Validation (@NotBlank, @Min, etc.)
+        var violations = validator.validate(attributeDto);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+    }
+}
