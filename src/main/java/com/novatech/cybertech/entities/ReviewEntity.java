@@ -1,6 +1,8 @@
 package com.novatech.cybertech.entities;
 
 import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Range;
@@ -8,31 +10,38 @@ import org.hibernate.validator.constraints.Range;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "review")
-public class ReviewEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity userEntity;
+@Getter
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Table(name = "reviewTable")
+@ToString(callSuper = true)
+public class ReviewEntity extends BaseEntity {
 
     @Range(min = 1, max = 5, message = "Rating must be between 1 and 5")
-    @Column(nullable = false)
+    @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
+    @Column(name = "isHateful", nullable = false)
+    private Boolean isHateful;
+
     @CreationTimestamp
+    @Column(name = "createdAt", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "reviews", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "reviewId", nullable = true)
     private ProductEntity productEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
+    private UserEntity userEntity;
 }

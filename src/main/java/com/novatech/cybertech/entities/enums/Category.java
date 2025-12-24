@@ -15,7 +15,10 @@ public enum Category {
     private final Integer code;
 
     public static Category getByCode(int code) {
-        return stream(values()).filter(category -> category.getCode() == code).findFirst().orElseThrow(IllegalArgumentException::new);
+        return stream(values())
+                .filter(category -> category.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
 }

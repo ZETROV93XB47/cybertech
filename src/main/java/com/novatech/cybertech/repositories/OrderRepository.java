@@ -1,9 +1,12 @@
 package com.novatech.cybertech.repositories;
 
 import com.novatech.cybertech.entities.OrderEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.UUID;
+
 @Repository
-public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
+public interface OrderRepository extends CrudBaseRepository<OrderEntity, Long> {
+    List<OrderEntity> findAllByUuid(final UUID userUuid);
 }

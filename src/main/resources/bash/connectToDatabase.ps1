@@ -15,4 +15,4 @@ Get-Content $envFile | ForEach-Object {
 }
 
 # Connexion à MySQL dans le conteneur Docker
-docker exec -it mysql_ecommerce mysql -u"$env:MYSQL_USER" -p"$env:MYSQL_PASSWORD" "$env:MYSQL_DATABASE"
+docker exec -it "$env:MYSQL_CONTAINER_NAME" mysql -u "root" "$env:MYSQL_DATABASE"

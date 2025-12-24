@@ -1,55 +1,78 @@
 package com.novatech.cybertech.entities;
 
+import com.novatech.cybertech.entities.enums.CommunicationChanel;
 import com.novatech.cybertech.entities.enums.Role;
 import com.novatech.cybertech.entities.enums.Sex;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
-@Setter
-@Builder
-@ToString
-@EqualsAndHashCode
+@SuperBuilder
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Table(name = "user")
-public class UserEntity {
+@Table(name = "userTable")
+@ToString(callSuper = true, exclude = {"orderEntities", "reviewEntities", "bankCardEntities"})
+@EqualsAndHashCode(callSuper = true, exclude = {"orderEntities", "reviewEntities", "bankCardEntities"})
+public class UserEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId", nullable = false)
-    private Long userId;
-
-    @Column(name = "email", nullable = false, columnDefinition = "char(50)")
+    @Column(name = "email", nullable = false, unique = true, length = 50)
     private String email;
 
-    @Column(name = "firstName", columnDefinition = "char(15)")
+    @Column(name = "firstName", length = 50)
     private String firstName;
 
-    @Column(name = "lastName", columnDefinition = "char(15)")
+    @Column(name = "lastName", length = 50)
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "sex", nullable = false)
     private Sex sex;
 
-    @Column(name = "adress", columnDefinition = "char(50)")
-    private String adress;
+    @Column(name = "address", length = 255)
+    private String address;
 
-    @Column(name = "birthDate", columnDefinition = "DATE")
-    private Date birthDate;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "birthDate")
+    private LocalDate birthDate;
 
-    @Column(name = "password", columnDefinition = "char(36)")
+    @Column(name = "password", length = 100)
     private String password;
 
+    @Column(unique = true, nullable = false)
+    private String keycloakId;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL)
-    @ToString.Exclude
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
+
+    @Column(name = "isActive", nullable = false)
+    private Boolean isActive = true;
+
+    //@Enumerated(EnumType.STRING)
+    @Column(name = "defaultCommunicationChanel", nullable = false)
+    private CommunicationChanel favoriteCommunicationChanel;
+
+    @Column(name = "numberOfHatefulComments", nullable = false)
+    private int numberOfHatefulComments = 0;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderEntity> orderEntities;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewEntity> reviewEntities;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BankCardEntity> bankCardEntities;
 }
+
+//@OneToMany(fetch = FetchType.EAGER, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+//private List<CartEntity> cartEntities;

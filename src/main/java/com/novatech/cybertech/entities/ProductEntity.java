@@ -1,45 +1,39 @@
 package com.novatech.cybertech.entities;
 
-import com.novatech.cybertech.entities.enums.Brand;
-import com.novatech.cybertech.entities.enums.Category;
-import com.novatech.cybertech.entities.enums.DisplayType;
+import com.novatech.cybertech.entities.enums.*;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 @Entity
+@Setter
 @Getter
-@Builder
-@ToString
-@EqualsAndHashCode
-@Table(name = "product")
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "productId", nullable = false)
-    private Long productId;
-
-    @Column(name = "productUuid", nullable = false)
-    private UUID productUuid;
+@ToString(callSuper = true)
+@Table(name = "productTable")
+@EqualsAndHashCode(callSuper = true, exclude = {"orderItemEntities", "reviewEntities"})
+public class ProductEntity extends BaseEntity {
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "stockQuantity", nullable = false)
-    private int stockQuantity;
-
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "brand", nullable = false)
     private Brand brand;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     private Category category;
 
@@ -49,23 +43,25 @@ public class ProductEntity {
     @Column(name = "gpu", nullable = false, columnDefinition = "char(50)")
     private String gpu;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "ram", nullable = false, columnDefinition = "char(50)")
-    private String ram;
+    private Ram ram;
 
-    @Column(name = "hardDrive", nullable = false, columnDefinition = "char(50)")
-    private String hardDrive;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "ssd", nullable = false, columnDefinition = "char(50)")
-    private String ssd;
+    private SSD ssd;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "displayType")
     private DisplayType displayType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "displaySize")
-    private int displaySize;
+    private DisplaySize displaySize;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "os", nullable = false, columnDefinition = "char(20)")
-    private String os;
+    private Os os;
 
     @Column(name = "connectivity")
     private String connectivity;
@@ -73,15 +69,25 @@ public class ProductEntity {
     @Column(name = "photo")
     private String photo;
 
-    @Column(name = "stock")
-    private int stock;
+    @Column(name = "stock", nullable = false)
+    private Integer stock;
+
+    @Column(name = "reservedStock", nullable = false)
+    private Integer reservedStock = 0;
 
     @Column(name = "description", columnDefinition = "text")
     private String description;
 
-    @OneToMany(mappedBy = "productEntityId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JdbcTypeCode(SqlTypes.JSON) // <--- Indique à Hibernate d'utiliser le type JSON de la BDD
+    @Column(columnDefinition = "json") // Spécifique à PostgreSQL (utiliser "json" pour MySQL)
+    private Map<String, Object> attributes = new HashMap<>();
+
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItemEntity> orderItemEntities;
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ReviewEntity> reviewEntities;
 }
+
+//@OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//private List<CartItemEntity> cartItemEntities;
